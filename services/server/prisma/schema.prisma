@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model Account {
+  id        Int          @id @default(autoincrement())
+  username  String?      @unique
+  email     String       @unique
+  password  String
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+  profile   Profile?
+  chats     ChatMember[]
+  messages  Message[]
+
+  @@map("accounts")
+}
+
+model Profile {
+  accountId   Int       @id
+  name        String
+  avatar      String?
+  description String?
+  birthdate   DateTime?
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  account     Account   @relation(fields: [accountId], references: [id])
+
+  @@map("profiles")
+}
+
+model Chat {
+  id          Int          @id @default(autoincrement())
+  type        ChatType
+  name        String?
+  avatar      String?
+  description String?
+  public      Boolean      @default(false)
+  members     ChatMember[]
+  messages    Message[]
+
+  @@map("chats")
+}
+
+model ChatMember {
+  chatId    Int
+  accountId Int
+  role      MemberRole
+  chat      Chat       @relation(fields: [chatId], references: [id])
+  account   Account    @relation(fields: [accountId], references: [id])
+
+  @@id([chatId, accountId])
+  @@map("members")
+}
+
+model Message {
+  id          Int          @id @default(autoincrement())
+  chatId      Int
+  accountId   Int
+  text        String
+  author      Account      @relation(fields: [accountId], references: [id])
+  chat        Chat         @relation(fields: [chatId], references: [id])
+  attachments Attachment[]
+
+  @@map("messages")
+}
+
+model Attachment {
+  id        Int            @id @default(autoincrement())
+  messageId Int
+  type      AttachmentType
+  content   String
+  message   Message        @relation(fields: [messageId], references: [id])
+
+  @@map("attachments")
+}
+
+enum ChatType {
+  PERSONAL
+  GROUP
+  CHANNEL
+}
+
+enum MemberRole {
+  OWNER
+  ADMIN
+  USER
+}
+
+enum AttachmentType {
+  PHOTO
+  VIDEO
+  AUDIO
+  DOCUMENT
+  PRESENTATION
+  SPREADSHEET
+  ARCHIVE
+  FILE
+}
