@@ -7,7 +7,7 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
-model User {
+model Account {
   id        Int          @id @default(autoincrement())
   username  String?      @unique
   email     String       @unique
@@ -18,17 +18,17 @@ model User {
   chats     ChatMember[]
   messages  Message[]
 
-  @@map("users")
+  @@map("accounts")
 }
 
 model Profile {
-  userId      Int       @id
+  accountId   Int       @id
   name        String
   avatar      String?
   description String?
   birthdate   DateTime?
   updatedAt   DateTime  @updatedAt @map("updated_at")
-  user        User      @relation(fields: [userId], references: [id])
+  account     Account   @relation(fields: [accountId], references: [id])
 
   @@map("profiles")
 }
@@ -47,22 +47,22 @@ model Chat {
 }
 
 model ChatMember {
-  chatId Int
-  userId Int
-  role   MemberRole
-  chat   Chat       @relation(fields: [chatId], references: [id])
-  user   User       @relation(fields: [userId], references: [id])
+  chatId    Int
+  accountId Int
+  role      MemberRole
+  chat      Chat       @relation(fields: [chatId], references: [id])
+  account   Account    @relation(fields: [accountId], references: [id])
 
-  @@id([chatId, userId])
+  @@id([chatId, accountId])
   @@map("members")
 }
 
 model Message {
   id          Int          @id @default(autoincrement())
   chatId      Int
-  userId      Int
+  accountId   Int
   text        String
-  author      User         @relation(fields: [userId], references: [id])
+  author      Account      @relation(fields: [accountId], references: [id])
   chat        Chat         @relation(fields: [chatId], references: [id])
   attachments Attachment[]
 
