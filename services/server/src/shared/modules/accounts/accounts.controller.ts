@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { AccountsService } from './accounts.service';
@@ -13,6 +13,7 @@ export class AccountsController {
   /**
     Create a new account
   */ 
+  @HttpCode(HttpStatus.CREATED)
   @Post()
   createAccount(@Body() data: CreateAccountDto) {
     return this.accountsService.createAccount(data);
@@ -21,6 +22,7 @@ export class AccountsController {
   /**
     Get all accounts
   */
+  @HttpCode(HttpStatus.OK)
   @Get()
   getAllAccounts() {
     return this.accountsService.getAllAccounts();
@@ -29,6 +31,7 @@ export class AccountsController {
   /**
     Get account by ID
   */
+  @HttpCode(HttpStatus.OK)
   @Get(':id')
   getAccount(@Param('id') id: number) {
     return this.accountsService.getAccount(id);
@@ -37,6 +40,7 @@ export class AccountsController {
   /**
     Update a account profile
   */
+  @HttpCode(HttpStatus.OK)
   @Patch(':id/profile')
   updateAccountProfile(@Param('id') id: number, @Body() data: UpdateProfileDto) {
     return this.accountsService.updateProfile(id, data);

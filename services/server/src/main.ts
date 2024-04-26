@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 import { corsOptions } from './config/cors.config';
@@ -15,8 +16,10 @@ async function bootstrap() {
   })
 
   app.useGlobalPipes(new ValidationPipe({
-    transform: true
+    transform: true,
+    whitelist: true
   }))
+  app.use(cookieParser())
 
   const config = new DocumentBuilder()
     .setTitle('Messenger App')

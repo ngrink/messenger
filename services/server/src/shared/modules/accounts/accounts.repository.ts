@@ -73,6 +73,19 @@ export class AccountsRepository {
     return account;
   }
 
+  async getAccountByLogin(login: string) {
+    const account = await this.prisma.account.findFirst({
+      where: {
+        OR: [
+          { email: login },
+          { username: login },
+        ]
+      },
+    })
+
+    return account;
+  }
+
   async updateProfile(accountId: number, data: UpdateProfileDto) {
     const profile = await this.prisma.profile.update({
       where: {

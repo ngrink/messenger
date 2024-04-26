@@ -43,6 +43,15 @@ export class AccountsService {
     return account;
   }
 
+  async getAccountByLogin(login: string) {
+    const account = this.accountsRepository.getAccountByLogin(login)
+    if (!account) {
+      throw AccountsException.AccountNotFound();
+    }
+
+    return account;
+  }
+
   async updateProfile(accountId: number, data: UpdateProfileDto) {
     const profile = await this.accountsRepository.updateProfile(accountId, data)
     if (!profile) {

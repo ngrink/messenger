@@ -2,10 +2,10 @@ import { BadRequestException, NotFoundException } from "@nestjs/common";
 
 export class AccountsException {
 	static AccountEmailExists() {
-		return new BadRequestException(arguments.callee.name, 'Account with that email already exists')
+		return new BadRequestException('Account with that email already exists', 'ACCOUNT_EMAIL_EXISTS')
 	}
 
 	static AccountNotFound() {
-		return new NotFoundException(arguments.callee.name, 'Account not found')
+		return new NotFoundException('Account not found', 'ACCOUNT_NOT_FOUND')
 	}
 }

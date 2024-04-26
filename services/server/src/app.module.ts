@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 
 import { PrismaModule } from './config/prisma.config';
 import { TokensModule } from './shared/modules/tokens';
-import { AccountsModule } from './shared/modules/accounts/accounts.module';
+import { AccountsModule } from './shared/modules/accounts';
+import { AuthModule, AuthGuard } from './shared/modules/auth';
 
 @Module({
   imports: [
@@ -12,9 +14,15 @@ import { AccountsModule } from './shared/modules/accounts/accounts.module';
     }),
     PrismaModule,
     TokensModule,
-    AccountsModule
+    AccountsModule,
+    AuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    }
+  ],
 })
 export class AppModule {}
