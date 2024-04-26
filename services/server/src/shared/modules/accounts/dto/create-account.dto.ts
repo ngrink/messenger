@@ -1,0 +1,15 @@
+import { IsEmail, IsString, IsStrongPassword, Matches, Max, MaxLength } from "class-validator";
+
+export class CreateAccountDto {
+    @IsString()
+    @MaxLength(20)
+    name: string;
+
+    @IsEmail()
+    @MaxLength(100)
+    email: string;
+
+    @IsStrongPassword()
+    @MaxLength(100)
+    password: string;
+}
