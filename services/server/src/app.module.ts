@@ -1,11 +1,14 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 
-import { PrismaModule } from './config/prisma.config';
-import { TokensModule } from './shared/modules/tokens';
-import { AccountsModule } from './shared/modules/accounts';
-import { AuthModule, AuthGuard } from './shared/modules/auth';
+import { MethodOverrideMiddleware } from '@/shared/middlewares/method-override.middleware';
+import { LoggerMiddleware } from '@/shared/middlewares/logger.middleware';
+
+import { PrismaModule } from '@/config/prisma.config';
+import { TokensModule } from '@/shared/modules/tokens';
+import { AccountsModule } from '@/shared/modules/accounts';
+import { AuthModule, AuthGuard } from '@/shared/modules/auth';
 
 @Module({
   imports: [
@@ -25,4 +28,9 @@ import { AuthModule, AuthGuard } from './shared/modules/auth';
     }
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(MethodOverrideMiddleware).forRoutes('*');
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
