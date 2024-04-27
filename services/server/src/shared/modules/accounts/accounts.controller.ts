@@ -15,8 +15,10 @@ export class AccountsController {
   */ 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  createAccount(@Body() data: CreateAccountDto) {
-    return this.accountsService.createAccount(data);
+  async createAccount(@Body() data: CreateAccountDto) {
+    await this.accountsService.createAccount(data);
+
+    return "OK";
   }
 
   /**

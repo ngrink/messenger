@@ -24,11 +24,11 @@
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
       "@/components/*": ["./src/views/components/*"],
       "@/containers/*": ["./src/views/containers/*"],
       "@/layouts/*": ["./src/views/layouts/*"],
       "@/screens/*": ["./src/views/screens/*"],
+      "@/*": ["./src/*"],
     }
   },
   "include": ["src"],

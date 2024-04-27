@@ -1,5 +1,8 @@
-import React, { Suspense } from "react"
-import { Route, Routes } from "react-router-dom"
+import React, { Suspense } from "react";
+import { Route, Routes } from "react-router-dom";
+
+const RegistrationScreen = React.lazy(() => import("@/screens/Registration"));
+const LoginScreen = React.lazy(() => import("@/screens/Login"));
 
 function App() {
   return (
@@ -7,17 +10,18 @@ function App() {
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route>
-            <Route path="/login" element={<div>LoginScreen</div>} />
+            <Route path="/signup" element={<RegistrationScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
           </Route>
           <Route>
             <Route path="/" element={<div>HomeScreen</div>} />
             <Route path="/chats/:id" element={<div>ChatScreen</div>} />
           </Route>
-					<Route path="*" element={<h1>404 Not found</h1>} />
+          <Route path="*" element={<h1>404 Not found</h1>} />
         </Routes>
       </Suspense>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
