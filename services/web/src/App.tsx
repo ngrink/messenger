@@ -1,8 +1,10 @@
-import React, { Suspense } from "react";
-import { Route, Routes } from "react-router-dom";
+import React, { Suspense } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import './assets/css/app.css'
 
-const RegistrationScreen = React.lazy(() => import("@/screens/Registration"));
-const LoginScreen = React.lazy(() => import("@/screens/Login"));
+const RegistrationScreen = React.lazy(() => import('@/screens/Registration'))
+const LoginScreen = React.lazy(() => import('@/screens/Login'))
+const ChatScreen = React.lazy(() => import('@/screens/Chat'))
 
 function App() {
   return (
@@ -14,14 +16,14 @@ function App() {
             <Route path="/login" element={<LoginScreen />} />
           </Route>
           <Route>
-            <Route path="/" element={<div>HomeScreen</div>} />
-            <Route path="/chats/:id" element={<div>ChatScreen</div>} />
+            <Route path="/" element={<Navigate to="/chats" replace={true} />} />
+            <Route path="/chats" element={<ChatScreen />} />
           </Route>
           <Route path="*" element={<h1>404 Not found</h1>} />
         </Routes>
       </Suspense>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
