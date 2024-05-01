@@ -8,7 +8,8 @@ import {
   TrashIcon,
   HandIcon,
 } from '@radix-ui/react-icons'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Switch } from '@/components/ui/switch'
+import { Button } from '../ui/button'
 
 export const ChatDetails = () => {
   return (
@@ -34,14 +35,17 @@ export const ChatDetails = () => {
       </div>
 
       <div
-        style={{ minHeight: 20, backgroundColor: '#d9d7d7' }}
+        style={{
+          minHeight: 7,
+          backgroundColor: '#f7f7f7',
+          boxShadow: 'inset 0px -1px 5px 2px rgba(0,0,0,0.1)',
+        }}
         className="splitter"
       ></div>
 
       <div
         style={{
-          padding: 10,
-          marginLeft: 15,
+          padding: '10px 20px',
         }}
         className="body"
       >
@@ -51,17 +55,26 @@ export const ChatDetails = () => {
         >
           <InfoCircledIcon />
           <div className="user-credentials">
-            <div style={{ marginLeft: 10, paddingTop: 12 }} className="row-data">
+            <div
+              style={{ marginLeft: 10, paddingTop: 12 }}
+              className="row-data"
+            >
               +7 996 784 0841
               <div style={{ fontSize: 12, color: 'gray' }}>Mobile</div>
             </div>
 
-            <div style={{ marginLeft: 10, paddingTop: 12 }} className="row-data">
+            <div
+              style={{ marginLeft: 10, paddingTop: 12 }}
+              className="row-data"
+            >
               <a href="#">@excelsen1or</a>
               <div style={{ fontSize: 12, color: 'gray' }}>Username</div>
             </div>
 
-            <div style={{ marginLeft: 10, paddingTop: 12, paddingBottom: 12 }} className="row-data">
+            <div
+              style={{ marginLeft: 10, paddingTop: 12, paddingBottom: 12 }}
+              className="row-data"
+            >
               Sep 22, 2003 (20 years old)
               <div style={{ fontSize: 12, color: 'gray' }}>Date of birth</div>
             </div>
@@ -78,9 +91,13 @@ export const ChatDetails = () => {
             }}
           >
             <BellIcon />
-            <div style={{ marginLeft: 10, paddingTop: 12, paddingBottom: 12 }} className="row-data">
-              <div style={{ color: 'gray' }}>
-                Notifications
+            <div
+              style={{ marginLeft: 10, paddingTop: 12, paddingBottom: 12 }}
+              className="row-data w-full"
+            >
+              <div className="flex w-full items-center justify-between">
+                <div>Notifications</div>
+                <Switch className="hover:border-transparent focus:outline-none" />
               </div>
             </div>
           </div>
@@ -88,70 +105,87 @@ export const ChatDetails = () => {
       </div>
 
       <div
-        style={{ minHeight: 20, backgroundColor: '#d9d7d7' }}
+        style={{
+          minHeight: 7,
+          backgroundColor: '#f7f7f7',
+          boxShadow: 'inset 0px -1px 5px 2px rgba(0,0,0,0.1)',
+        }}
         className="splitter"
       ></div>
 
       <div
         style={{
-          padding: 10,
-          marginLeft: 15,
+          padding: '10px 0px',
         }}
         className="media-info"
       >
         <div>
-          <div
+          <button
             style={{ display: 'flex', alignItems: 'center', marginBottom: 5 }}
+            className="w-full rounded-none border-0 border-transparent px-5 py-2 hover:border-none hover:bg-gray-100"
           >
             <ImageIcon />
             <div style={{ marginLeft: 10 }}>1 photo</div>
-          </div>
-          <div
+          </button>
+          <button
             style={{ display: 'flex', alignItems: 'center', marginBottom: 5 }}
+            className="w-full rounded-none border-0 border-transparent px-5 py-2 hover:border-none hover:bg-gray-100"
           >
             <Link1Icon />
             <div style={{ marginLeft: 10 }}>1 shared link</div>
-          </div>
+          </button>
         </div>
       </div>
 
       <div
-        style={{ minHeight: 20, backgroundColor: '#d9d7d7' }}
+        style={{
+          minHeight: 7,
+          backgroundColor: '#f7f7f7',
+          boxShadow: 'inset 0px -1px 5px 2px rgba(0,0,0,0.1)',
+        }}
         className="splitter"
       ></div>
 
       <div
         style={{
-          padding: 10,
-          marginLeft: 15,
+          padding: '10px 0px',
         }}
         className="footer"
       >
         <div>
-          <div
+          <button
             style={{ display: 'flex', alignItems: 'center', marginBottom: 5 }}
+            className="w-full rounded-none border-0 border-transparent px-5 py-2 hover:border-none hover:bg-gray-100"
           >
             <Share1Icon />
             <div style={{ marginLeft: 10 }}>Share this contact</div>
-          </div>
-          <div
+          </button>
+          <button
             style={{ display: 'flex', alignItems: 'center', marginBottom: 5 }}
+            className="w-full rounded-none border-0 border-transparent px-5 py-2 hover:border-none hover:bg-gray-100"
           >
             <Pencil1Icon />
             <div style={{ marginLeft: 10 }}>Edit contact</div>
-          </div>
-          <div
+          </button>
+          <button
             style={{ display: 'flex', alignItems: 'center', marginBottom: 5 }}
+            className="w-full rounded-none border-0 border-transparent px-5 py-2 hover:border-none hover:bg-gray-100"
           >
             <TrashIcon />
             <div style={{ marginLeft: 10 }}>Delete account</div>
-          </div>
-          <div
-            style={{ color: "red", display: 'flex', alignItems: 'center', marginBottom: 5 }}
+          </button>
+          <button
+            style={{
+              color: 'red',
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: 5,
+            }}
+            className="w-full rounded-none border-0 border-transparent px-5 py-2 hover:border-none hover:bg-gray-100"
           >
             <HandIcon />
             <div style={{ marginLeft: 10 }}>Block user</div>
-          </div>
+          </button>
         </div>
       </div>
     </div>
