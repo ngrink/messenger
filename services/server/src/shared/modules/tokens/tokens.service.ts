@@ -13,7 +13,7 @@ export class TokensService {
       payload, 
       this.configService.get('JWT_ACCESS_SECRET'), 
       {
-        expiresIn: this.isProduction ? '15m' : '1d',
+        expiresIn: this.isProduction ? '15m' : '7d',
       }
     );
   }

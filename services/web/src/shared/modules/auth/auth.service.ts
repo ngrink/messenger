@@ -1,12 +1,19 @@
-import { AuthAPI } from "./auth.api";
-import { LoginRequest } from "./auth.types";
-
+import { store } from "@/config";
+import { AuthAPI, LoginRequest } from "./auth.api";
 
 export class AuthService {
   static async login(data: LoginRequest) {
-    const { account, accessToken } = await AuthAPI.login(data)
+    const { accessToken } = await AuthAPI.login(data)
+    const { user } = await this.getAuthUser()
 
-    localStorage.setItem("access_token", accessToken)
-    localStorage.setItem("account", JSON.stringify(account))
+    store.authStore.setAuth(user, accessToken)
+  }
+
+  static async logout() {
+    store.authStore.resetAuth()
+  }
+
+  static async getAuthUser() {
+    return await AuthAPI.getAuthUser()
   }
 }

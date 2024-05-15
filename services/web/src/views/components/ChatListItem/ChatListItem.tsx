@@ -1,64 +1,98 @@
-import { FunctionComponent } from 'react'
-import { cn } from '@/shared/utils'
+import { FC, FunctionComponent } from 'react'
+import { observer } from 'mobx-react-lite'
+import { MdGroup } from 'react-icons/md'
 
+import { useStore } from '@/config'
+import { ChatType } from '@/modules/chats'
+import { cn } from '@/shared/utils'
 import { Avatar } from '../Avatar'
 
 export type ChatListItemProps = {
-  chatId: number
+  id: number
+  type: ChatType
   name: string
-  lastMessageAt: string
-  lastMessageText: string
-  unreadMessagesCount: number
-  active: boolean
   avatar?: string
+  lastMessage?: {
+    createdAt: string
+    text: string
+  }
+  unreadMessagesCount?: number
+  identifier?: string
+  variant?: 'default' | 'search'
+  onClick: (chatId: number) => void
 }
 
-export const ChatListItem: FunctionComponent<ChatListItemProps> = ({
-  avatar,
-  name,
-  lastMessageAt,
-  lastMessageText,
-  unreadMessagesCount,
-  active,
-}) => {
-  const avatarFallback = name
-    .split(' ')
-    .slice(0, 2)
-    .map((item) => item[0])
-    .join('')
+export const ChatListItem: FunctionComponent<ChatListItemProps> = observer(
+  ({
+    id,
+    type,
+    name,
+    avatar,
+    lastMessage,
+    unreadMessagesCount,
+    identifier,
+    variant = 'default',
+    onClick,
+  }) => {
+    const { chatsStore } = useStore()
 
-  const rootClassName = cn('flex w-full items-center gap-4 px-2.5 py-2', {
-    'bg-sky-600': active,
-    'hover:bg-neutral-100': !active,
-  })
+    const active = id === chatsStore.currentChatId
+    const avatarFallback = name
+      ? name
+          .split(' ')
+          .slice(0, 2)
+          .map((item) => item[0])
+          .join('')
+      : ''
 
-  return (
-    <div className={rootClassName}>
-      <Avatar image={avatar} fallback={avatarFallback} />
-      <div className="bg flex w-full flex-col gap-0.5 overflow-hidden">
-        <div className="flex w-full items-center justify-between">
-          <div className="flex items-center gap-1.5 text-sm font-medium">
-            <span className={`${active ? 'text-gray-100' : ''}`}>{name}</span>
-            <div className="bottom-0.5 right-0.5 z-[1000] h-1 w-1 rounded-full bg-green-500"></div>
+    const rootClassName = cn('flex w-full items-center gap-4 px-2.5 py-2', {
+      'bg-sky-600': active,
+      'hover:bg-neutral-100': !active,
+    })
+
+    return (
+      <div className={rootClassName} onClick={() => onClick(id)}>
+        <Avatar image={avatar} fallback={avatarFallback} />
+        <div className="bg flex w-full flex-col gap-0.5 overflow-hidden">
+          <div className="flex w-full items-center justify-between">
+            <div className="flex items-center gap-1.5 text-sm font-medium">
+              <ChatTypeIcon type={type} active={active} />
+              <span className={`${active ? 'text-gray-100' : ''}`}>{name}</span>
+            </div>
+            {variant === 'default' && lastMessage && (
+              <div
+                className={`text-xs ${active ? 'text-gray-200' : 'text-gray-400'}`}
+              >
+                {lastMessage.createdAt}
+              </div>
+            )}
           </div>
-          <div
-            className={`text-xs ${active ? 'text-gray-200' : 'text-gray-400'}`}
-          >
-            {lastMessageAt}
+          <div className="flex w-full items-center justify-between gap-1">
+            {variant === 'default' && lastMessage && (
+              <div
+                className={`overflow-hidden text-ellipsis whitespace-nowrap text-[13px] font-light ${active ? 'text-gray-200' : 'text-gray-500'}`}
+              >
+                {lastMessage.text}
+              </div>
+            )}
+
+            {variant === 'search' && (
+              <div
+                className={`overflow-hidden text-ellipsis whitespace-nowrap text-[13px] font-light ${active ? 'text-gray-200' : 'text-gray-500'}`}
+              >
+                @{identifier}
+              </div>
+            )}
+
+            {variant === 'default' && unreadMessagesCount ? (
+              <UnreadMessagesBadge count={unreadMessagesCount} />
+            ) : null}
           </div>
-        </div>
-        <div className="flex w-full items-center justify-between gap-1">
-          <div
-            className={`overflow-hidden text-ellipsis whitespace-nowrap text-[13px] font-light ${active ? 'text-gray-200' : 'text-gray-500'}`}
-          >
-            {lastMessageText}
-          </div>
-          <UnreadMessagesBadge count={unreadMessagesCount} />
         </div>
       </div>
-    </div>
-  )
-}
+    )
+  }
+)
 
 type UnreadMessagesBadgeProps = {
   count: number
@@ -74,6 +108,33 @@ const UnreadMessagesBadge: FunctionComponent<UnreadMessagesBadgeProps> = ({
   return (
     <div className="flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 p-2.5 text-xs text-white">
       {count}
+    </div>
+  )
+}
+
+type ChatTypeIconProps = {
+  type: ChatType
+  active: boolean
+}
+
+const ChatTypeIcon: FC<ChatTypeIconProps> = ({ type, active }) => {
+  if (type === ChatType.PERSONAL) {
+    return null
+  }
+
+  return (
+    <div>
+      {type == ChatType.GROUP && <MdGroup color={active ? 'white' : 'black'} />}
+      {type == ChatType.CHANNEL && !active && (
+        <div className="h-3 w-3">
+          <img src="/assets/icons/megaphone.png" />
+        </div>
+      )}
+      {type == ChatType.CHANNEL && active && (
+        <div className="h-3 w-3">
+          <img src="/assets/icons/megaphone-white.png" />
+        </div>
+      )}
     </div>
   )
 }

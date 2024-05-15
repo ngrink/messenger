@@ -2,10 +2,19 @@ import { createContext, useContext } from "react";
 import { configurePersistable } from 'mobx-persist-store';
 import { injectStores } from '@mobx-devtools/tools';
 
+import { AuthStore } from "@/shared/modules/auth";
 import { ChatsStore } from "@/modules/chats";
+import { SearchStore } from "@/modules/search";
+
+
+const authStore = new AuthStore();
+const chatsStore = new ChatsStore(authStore);
+const searchStore = new SearchStore();
 
 export const store = {
-  chatsStore: new ChatsStore(),
+  authStore,
+  chatsStore,
+  searchStore
 }
 
 export const StoreContext = createContext(store);

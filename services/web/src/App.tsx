@@ -7,6 +7,19 @@ const LoginScreen = React.lazy(() => import('@/screens/Login'))
 const ChatScreen = React.lazy(() => import('@/screens/Chat'))
 
 function App() {
+  // const { authStore } = useStore()
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (window.navigator.onLine && authStore.isAuth) {
+  //     }
+  //   }, 1000 * 60)
+
+  //   return () => {
+  //     clearInterval(interval)
+  //   }
+  // }, [])
+
   return (
     <div className="App">
       <Suspense fallback={<div>Loading...</div>}>

@@ -1,10 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { Link, useNavigate } from 'react-router-dom'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Form,
   FormControl,
@@ -12,31 +12,31 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { AccountService } from "@/shared/modules/accounts";
-import { AuthService } from "@/shared/modules/auth";
+} from '@/components/ui/form'
+import { UsersService } from '@/shared/modules/users'
+import { AuthService } from '@/shared/modules/auth'
 
 const formSchema = z
   .object({
     name: z.string().min(1, {
-      message: "Name should not be empty",
+      message: 'Name should not be empty',
     }),
     email: z.string().email({
-      message: "Email must be valid",
+      message: 'Email must be valid',
     }),
     password: z.string().min(12, {
-      message: "Password must consist of 12 or more characters.",
+      message: 'Password must consist of 12 or more characters.',
     }),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
 
 export const RegistrationScreen = () => {
   return (
-    <div className="w-full h-screen lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+    <div className="h-screen w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
       <div className="hidden bg-muted lg:block">
         <img
           src="/assets/img/neon.jpg"
@@ -46,7 +46,7 @@ export const RegistrationScreen = () => {
           className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
       </div>
-      <div className="flex items-center justify-center py-12 border border-red-500">
+      <div className="flex items-center justify-center border border-red-500 py-12">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
             <h1 className="text-3xl font-bold">Sign up</h1>
@@ -58,7 +58,7 @@ export const RegistrationScreen = () => {
           <RegistrationForm />
 
           <div className="text-center text-sm">
-            Have an account?{" "}
+            Have an account?{' '}
             <Link to="/login" className="underline">
               Login
             </Link>
@@ -66,53 +66,53 @@ export const RegistrationScreen = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export const RegistrationForm = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
-  });
+  })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await AccountService.register({
+      await UsersService.register({
         name: values.name,
         email: values.email,
         password: values.password,
-      });
+      })
       await AuthService.login({
         login: values.email,
         password: values.password,
-      });
+      })
 
-      navigate("/");
+      navigate('/')
     } catch (e: any) {
-      const error = e.response.data;
+      const error = e.response.data
 
       switch (error.error) {
-        case "ACCOUNT_EMAIL_EXISTS":
+        case 'ACCOUNT_EMAIL_EXISTS':
           form.setError(
-            "email",
+            'email',
             {
-              type: "manual",
+              type: 'manual',
               message: error.message,
             },
             {
               shouldFocus: true,
             }
-          );
-          break;
+          )
+          break
         default:
-          throw e;
+          throw e
       }
     }
   }
@@ -188,5 +188,5 @@ export const RegistrationForm = () => {
         </Button>
       </form>
     </Form>
-  );
-};
+  )
+}

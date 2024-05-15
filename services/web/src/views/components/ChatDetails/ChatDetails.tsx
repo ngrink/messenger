@@ -1,3 +1,4 @@
+import { FC } from 'react'
 import {
   InfoCircledIcon,
   BellIcon,
@@ -8,22 +9,41 @@ import {
   TrashIcon,
   HandIcon,
 } from '@radix-ui/react-icons'
-import { Switch } from '@/components/ui/switch'
-import { Button } from '../ui/button'
 
-export const ChatDetails = () => {
+import { Switch } from '@/components/ui/switch'
+import { cn } from '@/shared/utils'
+
+type ChatDetailsProps = {
+  name: string
+  avatar: string
+  isHidden: boolean
+}
+
+export const ChatDetails: FC<ChatDetailsProps> = ({
+  name,
+  avatar,
+  isHidden,
+}) => {
+  const rootClassname = cn(
+    'z-[1000] transition-all shadow-[-2px_0_3px_0_rgba(0,0,0,0.1)] bg-white',
+    {
+      'flex-[0_1_400px]': isHidden,
+      hidden: !isHidden,
+    }
+  )
+
   return (
-    <div>
+    <div className={rootClassname}>
       <div className="header">
         <div style={{ display: 'flex', padding: 20 }} className="user-info">
           <div className="avatar">
             <img
               style={{ height: 50, width: 50, borderRadius: 30 }}
-              src="https://sun9-19.userapi.com/s/v1/ig2/ol23fGKPEmprhYjCqEPsXyuYpvlmvnynD8J4DI80pRsE5eRxFZQWekTE_J-58Bbk8Hs5k2JYtv2d60Xs3bXLOuGs.jpg?size=50x50&quality=95&crop=1,0,1478,1478&ava=1"
+              src={avatar}
             />
           </div>
           <div style={{ marginLeft: 10 }} className="user-data">
-            <div className="user-login">Ruslan Kolyvanov</div>
+            <div className="user-login">{name}</div>
             <div
               style={{ color: 'gray', fontSize: 14 }}
               className="user-last-seen"

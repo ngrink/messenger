@@ -1,4 +1,5 @@
 import axios from "axios";
+import { store } from "./mobx";
 
 export const $axios = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -7,7 +8,10 @@ export const $axios = axios.create({
 });
 
 $axios.interceptors.request.use((config) => {
-  config.headers.setAuthorization(localStorage.getItem('access_token'));
+  let token = store.authStore.accessToken;
+  if (token) {
+    config.headers.setAuthorization(`Bearer ${token}`);
+  }
 
   return config;
 })

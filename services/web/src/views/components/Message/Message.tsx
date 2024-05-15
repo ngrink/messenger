@@ -1,18 +1,15 @@
 import { FunctionComponent } from 'react'
+
 import { Avatar } from '../Avatar'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '../ui/card'
+import { Card } from '../ui/card'
 
 export type MessageProps = {
+  id: number
   author: {
-    name: string
-    avatar: string
+    profile: {
+      name: string
+      avatar: string
+    }
   }
   text: string
   createdAt: string
@@ -21,11 +18,12 @@ export type MessageProps = {
 type MessageCardProps = MessageProps
 
 export const Message: FunctionComponent<MessageProps> = ({
+  id,
   author,
   text,
   createdAt,
 }) => {
-  const avatarFallback = author.name
+  const avatarFallback = author.profile.name
     .split(' ')
     .slice(0, 2)
     .map((item) => item[0])
@@ -33,8 +31,12 @@ export const Message: FunctionComponent<MessageProps> = ({
 
   return (
     <div className="flex items-end gap-4">
-      <Avatar image={author.avatar} fallback={avatarFallback} variant="small" />
-      <MessageCard author={author} text={text} createdAt={createdAt} />
+      <Avatar
+        image={author.profile.avatar}
+        fallback={avatarFallback}
+        variant="small"
+      />
+      <MessageCard id={id} author={author} text={text} createdAt={createdAt} />
     </div>
   )
 }

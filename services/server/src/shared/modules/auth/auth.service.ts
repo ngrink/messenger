@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Account } from '@prisma/client';
+import { User } from '@prisma/client';
 import * as bcrypt from 'bcryptjs'
 
-import { AccountsService } from '../accounts';
+import { UsersService } from '../users';
 import { TokensService } from '../tokens';
 import { AuthException } from './auth.exceptions';
 import { LoginDto } from './dto/login.dto';
@@ -11,28 +11,28 @@ import { RefreshTokenDto } from './dto/tokens.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly accountsService: AccountsService,
+    private readonly usersService: UsersService,
     private readonly tokensService: TokensService,
   ) {}
 
-  async login(account: Account) {
-    const tokens = await this.generateTokens(account)
+  async login(user: User) {
+    const tokens = await this.generateTokens(user)
     
     return tokens
   }
 
   async loginByCredentials(data: LoginDto) {
-    const account = await this.accountsService.getAccountByLogin(data.login).catch(() => null)
-    if (!account) {
+    const user = await this.usersService.getUserByLogin(data.login).catch(() => null)
+    if (!user) {
       throw AuthException.BadCredentials()
     }
 
-    const isMatches = await bcrypt.compare(data.password, account.password)
+    const isMatches = await bcrypt.compare(data.password, user.password)
     if (!isMatches) {
       throw AuthException.BadCredentials()
     }
 
-    const tokens = await this.generateTokens(account)
+    const tokens = await this.generateTokens(user)
 
     return tokens
   }
@@ -47,23 +47,23 @@ export class AuthService {
       throw AuthException.Unauthorized()
     }
 
-    const account = await this.accountsService.getAccount(Number(token.id))
-    const tokens = await this.generateTokens(account) 
+    const user = await this.usersService.getUser(token.id)
+    const tokens = await this.generateTokens(user) 
 
     return tokens
   }
 
-  private async generateTokens(account: Account) {
+  private async generateTokens(user: User) {
     const accessToken = this.tokensService.generateAccessToken({
-      id: account.id,
-      email: account.email,
-      username: account.username,
+      id: user.id,
+      email: user.email,
+      username: user.username,
     })
 
     const refreshToken = this.tokensService.generateRefreshToken({
-      id: account.id,
-      email: account.email,
-      username: account.username,
+      id: user.id,
+      email: user.email,
+      username: user.username,
     })
 
     return { accessToken, refreshToken }

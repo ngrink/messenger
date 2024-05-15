@@ -7,63 +7,70 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
-model Account {
-  id        Int          @id @default(autoincrement())
-  username  String?      @unique
-  email     String       @unique
-  password  String
-  createdAt DateTime     @default(now()) @map("created_at")
-  updatedAt DateTime     @updatedAt @map("updated_at")
-  profile   Profile?
-  chats     ChatMember[]
-  messages  Message[]
+model User {
+  id           Int       @id @default(autoincrement())
+  username     String?   @unique
+  email        String    @unique
+  password     String
+  online       Boolean   @default(false)
+  lastOnlineAt DateTime? @map("last_online_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  profile      Profile?
+  chats        Member[]
+  messages     Message[]
 
-  @@map("accounts")
+  @@map("users")
 }
 
 model Profile {
-  accountId   Int       @id
-  name        String
-  avatar      String?
-  description String?
-  birthdate   DateTime?
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  account     Account   @relation(fields: [accountId], references: [id])
+  userId    Int       @id @map("user_id")
+  name      String
+  avatar    String?
+  biography String?
+  birthdate DateTime?
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  user      User      @relation(fields: [userId], references: [id])
 
   @@map("profiles")
 }
 
 model Chat {
-  id          Int          @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   type        ChatType
+  public      Boolean   @default(false)
+  createdAt   DateTime  @default(now()) @map("created_at")
   name        String?
-  avatar      String?
   description String?
-  public      Boolean      @default(false)
-  members     ChatMember[]
+  avatar      String?
+  link        String?
+  members     Member[]
   messages    Message[]
 
   @@map("chats")
 }
 
-model ChatMember {
+model Member {
   chatId    Int
-  accountId Int
+  userId    Int
   role      MemberRole
-  chat      Chat       @relation(fields: [chatId], references: [id])
-  account   Account    @relation(fields: [accountId], references: [id])
+  createdAt DateTime   @default(now()) @map("created_at")
 
-  @@id([chatId, accountId])
+  user User @relation(fields: [userId], references: [id])
+  chat Chat @relation(fields: [chatId], references: [id])
+
+  @@id([chatId, userId])
   @@map("members")
 }
 
 model Message {
   id          Int          @id @default(autoincrement())
   chatId      Int
-  accountId   Int
+  userId      Int
   text        String
-  author      Account      @relation(fields: [accountId], references: [id])
+  createdAt   DateTime     @default(now()) @map("created_at")
   chat        Chat         @relation(fields: [chatId], references: [id])
+  author      User         @relation(fields: [userId], references: [id])
   attachments Attachment[]
 
   @@map("messages")

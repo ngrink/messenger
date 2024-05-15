@@ -1,11 +1,11 @@
 export class AccessTokenDto {
-  id: string;
+  id: number;
   email: string;
   username: string;
 }
 
 export class RefreshTokenDto {
-  id: string;
+  id: number;
   email: string;
   username: string;
 }
