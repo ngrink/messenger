@@ -59,6 +59,12 @@ export type Message = {
   text: string;
   createdAt: string;
   attachments: Attachment[]
+  author: {
+    profile: {
+      name: string;
+      avatar: string;
+    }
+  }
 }
 
 export type Attachment = {

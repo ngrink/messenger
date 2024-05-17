@@ -12,6 +12,7 @@ import {
 
 import { Switch } from '@/components/ui/switch'
 import { cn } from '@/shared/utils'
+import { Avatar } from '../Avatar'
 
 type ChatDetailsProps = {
   name: string
@@ -32,16 +33,19 @@ export const ChatDetails: FC<ChatDetailsProps> = ({
     }
   )
 
+  const avatarFallback = name
+    ? name
+        .split(' ')
+        .slice(0, 2)
+        .map((item) => item[0])
+        .join('')
+    : ''
+
   return (
     <div className={rootClassname}>
       <div className="header">
         <div style={{ display: 'flex', padding: 20 }} className="user-info">
-          <div className="avatar">
-            <img
-              style={{ height: 50, width: 50, borderRadius: 30 }}
-              src={avatar}
-            />
-          </div>
+          <Avatar image={avatar} fallback={avatarFallback} />
           <div style={{ marginLeft: 10 }} className="user-data">
             <div className="user-login">{name}</div>
             <div

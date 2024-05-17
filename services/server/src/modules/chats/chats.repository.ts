@@ -144,6 +144,29 @@ export class ChatsRepository {
     return chats;
   }
 
+  async getAllUserChatIds(userId: number) {
+    const ids = []
+    
+    const chats = await this.prisma.chat.findMany({
+      where: {
+        members: {
+          some: {
+            userId: userId
+          }
+        },
+      },
+      select: {
+        id: true
+      }
+    })
+
+    chats.forEach(chat => {
+      ids.push(chat.id)
+    })
+
+    return ids;
+  }
+
   async getChat(chatId: number) {
     const chat = await this.prisma.chat.findUnique({
       where: {
@@ -168,12 +191,25 @@ export class ChatsRepository {
     return chat
   }
 
-  async createChatMessage(userId: number, chatId: number, data: CreateChatMessageDto) {
+  async createChatMessage(data: CreateChatMessageDto) {
     const message = await this.prisma.message.create({
       data: {
-        userId: userId,
-        chatId: chatId,
+        userId: data.userId,
+        chatId: data.chatId,
         text: data.text,
+      },
+      include: {
+        attachments: true,
+        author: {
+          select: {
+            profile: {
+              select: {
+                name: true,
+                avatar: true
+              }
+            }
+          }
+        }
       }
     })
 

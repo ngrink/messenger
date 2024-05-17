@@ -1,9 +1,16 @@
-import { Button } from '../ui/button'
+import { FC } from 'react'
 
-export const SendBtn = () => {
+type SendBtnProps = {
+  onClick: () => void
+}
+
+export const SendBtn: FC<SendBtnProps> = ({ onClick }) => {
   return (
-    <div className="mx-2 h-6 w-6">
+    <button
+      className="mx-2 h-6 w-6 cursor-pointer border-none outline-none hover:border-none hover:outline-none focus:outline-none"
+      onClick={onClick}
+    >
       <img src="/assets/icons/send-message.png" />
-    </div>
+    </button>
   )
 }

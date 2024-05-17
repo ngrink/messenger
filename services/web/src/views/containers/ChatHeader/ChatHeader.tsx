@@ -10,7 +10,7 @@ export const ChatHeaderContainer: FC = observer(() => {
   return (
     <ChatHeader
       name={chatsStore.currentChatName || ''}
-      description={chatsStore.currentChatDescription || 'last seen recently'}
+      description={'last seen recently'}
     />
   )
 })

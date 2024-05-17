@@ -29,7 +29,7 @@ import { ChatsModule } from './modules/chats/chats.module';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    }
+    },
   ],
 })
 export class AppModule implements NestModule {

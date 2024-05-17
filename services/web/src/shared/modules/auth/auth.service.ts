@@ -4,8 +4,9 @@ import { AuthAPI, LoginRequest } from "./auth.api";
 export class AuthService {
   static async login(data: LoginRequest) {
     const { accessToken } = await AuthAPI.login(data)
-    const { user } = await this.getAuthUser()
+    store.authStore.setToken(accessToken)
 
+    const { user } = await this.getAuthUser()
     store.authStore.setAuth(user, accessToken)
   }
 

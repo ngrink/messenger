@@ -1,5 +1,7 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
+
+import { useStore, socket } from './config/'
 import './assets/css/app.css'
 
 const RegistrationScreen = React.lazy(() => import('@/screens/Registration'))
@@ -7,18 +9,21 @@ const LoginScreen = React.lazy(() => import('@/screens/Login'))
 const ChatScreen = React.lazy(() => import('@/screens/Chat'))
 
 function App() {
-  // const { authStore } = useStore()
+  const { authStore } = useStore()
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (window.navigator.onLine && authStore.isAuth) {
-  //     }
-  //   }, 1000 * 60)
+  useEffect(() => {
+    if (authStore.isAuth) {
+      socket.io.opts.extraHeaders = {
+        ...socket.io.opts.extraHeaders,
+        Authorization: `Bearer ${authStore.accessToken}`,
+      }
+      socket.connect()
+    }
 
-  //   return () => {
-  //     clearInterval(interval)
-  //   }
-  // }, [])
+    return () => {
+      socket.disconnect()
+    }
+  }, [authStore.isAuth])
 
   return (
     <div className="App">

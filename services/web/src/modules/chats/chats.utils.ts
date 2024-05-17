@@ -1,3 +1,3 @@
-const formatDate = (d: string) => {
-
+const formatDate = (date: string) => {
+  return date
 }

@@ -1,4 +1,6 @@
+import { store, socket } from "@/config";
 import { ChatsAPI } from "./chats.api";
+import { Message } from "./chats.types";
 
 export class ChatsService {
   static async createChat(targetUserId: number) {
@@ -26,8 +28,12 @@ export class ChatsService {
   }
 
   static async createChatMessage(chatId: number, text: string) {
-    const message = await ChatsAPI.createChatMessage(chatId, text);
-
-    return message
+    socket.emit('chats/createChatMessage', {chatId, text}, (message: Message) => {
+      store.chatsStore.addMessage(chatId, message);
+    });    
   }
 }
+
+socket.on('chats/newMessage', (message: Message) => {
+  store.chatsStore.addMessage(message.chatId, message);
+})

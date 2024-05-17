@@ -12,6 +12,7 @@ export class ChatsStore {
   currentChatId: number | null = null
   chats: {[key: number]: Chat} = {}
   messages: {[key: number]: Message[]} = {}
+  drafts: {[key: number]: string} = {}
 
   constructor(authStore: AuthStore) {
     this.authStore = authStore;
@@ -21,7 +22,8 @@ export class ChatsStore {
       name: 'ChatsStore',
       properties: [
         'isOpenedDetails',
-        // 'currentChatId'
+        // 'currentChatId',
+        'drafts'
       ],
       storage: window.localStorage
     })
@@ -38,7 +40,7 @@ export class ChatsStore {
 
   get currentChatName() {
     if (this.currentChat?.type === "PERSONAL") {
-      return this.currentInterlocutor.user.profile.name
+      return this.currentInterlocutor?.user.profile.name
     }
 
     return this.currentChatId? this.chats[this.currentChatId].name : null;
@@ -46,7 +48,7 @@ export class ChatsStore {
 
   get currentChatDescription() {
     if (this.currentChat?.type === "PERSONAL") {
-      return this.currentInterlocutor.user.profile.biography
+      return this.currentInterlocutor?.user.profile.biography
     }
 
     return this.currentChatId? this.chats[this.currentChatId].description : null;
@@ -65,7 +67,7 @@ export class ChatsStore {
       return null;
     }
 
-    if (this.currentChat?.type != "PERSONAL") {
+    if (this.currentChat.type != "PERSONAL") {
       throw new Error("Interlocutor doesn't exists in non personal chat")
     }
 
@@ -74,6 +76,10 @@ export class ChatsStore {
     })[0]
 
     return interlocutor
+  }
+
+  get currentDraftMessage() {
+    return this.currentChatId? this.drafts[this.currentChatId] : null;
   }
 
   openDetails() {
@@ -108,5 +114,10 @@ export class ChatsStore {
 
   setMessages(chatId: number, messages: Array<Message>) {
     this.messages[chatId] = messages;
+  }
+  
+  addMessage(chatId: number, message: Message) {
+    this.messages[chatId] = this.messages[chatId].concat(message)
+    this.chats[chatId] = {...this.chats[chatId], lastMessage: message}
   }
 }

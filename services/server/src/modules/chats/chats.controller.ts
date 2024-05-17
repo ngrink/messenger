@@ -5,7 +5,7 @@ import { Authenticated, CurrentUser } from '@/shared/modules/auth';
 
 import { ChatsService } from './chats.service';
 import { CreateChatDto } from './dto/create-chat.dto';
-import { CreateChatMessageDto } from './dto/create-chat-message.dto';
+import { CreateChatMessageBodyDto, CreateChatMessageDto } from './dto/create-chat-message.dto';
 
 @Controller('chats')
 export class ChatsController {
@@ -49,10 +49,11 @@ export class ChatsController {
   createChatMessage(
     @CurrentUser() user: AccessTokenDto,
     @Param("id") chatId: number,
-    @Body() data: CreateChatMessageDto,
+    @Body() data: CreateChatMessageBodyDto,
   ) {
     const userId = user.id;
+    const text = data.text
 
-    return this.chatsService.createChatMessage(userId, chatId, data);
+    return this.chatsService.createChatMessage({userId, chatId, text});
   }
 }

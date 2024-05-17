@@ -21,6 +21,18 @@ export class AuthStore {
     })
   }
 
+  get userId(): number {
+    if (!this.user) {
+      throw new Error('User not logged in')
+    }
+
+    return this.user.id
+  }
+
+  setToken(token: string) {
+    this.accessToken = token;
+  }
+  
   setAuth(user: User, accessToken: string) {
     this.user = user
     this.accessToken = accessToken

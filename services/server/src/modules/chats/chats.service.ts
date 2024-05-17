@@ -28,6 +28,12 @@ export class ChatsService {
     return chats;
   }
 
+  async getAllUserChatIds(userId: number) {
+    const ids = await this.chatsRepository.getAllUserChatIds(userId);
+
+    return ids;
+  }
+
   async getChat(chatId: number) {
     const chat = await this.chatsRepository.getChat(chatId);
     if (!chat) {
@@ -37,6 +43,17 @@ export class ChatsService {
     return chat;
   }
 
+  async createChatMessage(data: CreateChatMessageDto) {
+    const chat = await this.chatsRepository.getChat(data.chatId)
+    if (!chat) {
+      throw ChatsException.ChatNotFound()
+    }
+    
+    const message = await this.chatsRepository.createChatMessage(data);
+
+    return message;
+  }
+
   async getChatMessages(chatId: number) {
     const messages = await this.chatsRepository.getChatMessages(chatId);
     if (!messages) {
@@ -44,11 +61,5 @@ export class ChatsService {
     }
 
     return messages;
-  }
-
-  async createChatMessage(userId: number, chatId: number, data: CreateChatMessageDto) {
-    const message = await this.chatsRepository.createChatMessage(userId, chatId, data);
-
-    return message;
   }
 }
