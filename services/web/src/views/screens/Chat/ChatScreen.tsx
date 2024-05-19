@@ -1,13 +1,13 @@
+import { useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 
 import { useStore } from '@/config'
+import { ChatsService } from '@/modules/chats'
 import { ChatDetailsContainer } from '@/containers/ChatDetails'
 import { ChatListContainer } from '@/containers/ChatList'
 import { SearchInputContainer } from '@/containers/SearchInput'
 import { SearchResultsContainer } from '@/containers/SearchResults'
-import { Chat } from '@/components/Chat'
-import { useEffect } from 'react'
-import { ChatsService } from '@/modules/chats'
+import { ChatContainer } from '@/containers/Chat'
 
 export const ChatScreen = observer(() => {
   const { chatsStore, searchStore } = useStore()
@@ -33,8 +33,12 @@ export const ChatScreen = observer(() => {
         {searchStore.query && <SearchResultsContainer />}
       </div>
       <div className="flex h-screen bg-[linear-gradient(to_right_bottom,rgba(174,195,144,0.92),rgba(191,203,132,0.92)),url('/assets/img/patterns/11.svg')]">
-        {chatsStore.currentChatId && <Chat />}
-        {chatsStore.currentChatId && <ChatDetailsContainer />}
+        {(chatsStore.currentChatId || chatsStore.currentUserId) && (
+          <ChatContainer />
+        )}
+        {(chatsStore.currentChatId || chatsStore.currentUserId) && (
+          <ChatDetailsContainer />
+        )}
       </div>
     </div>
   )

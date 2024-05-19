@@ -1,10 +1,18 @@
+import { store } from "@/config";
 import { SearchAPI } from "./search.api";
 
 
 export class SearchService {
   static async search(query: string) {
-    const results = await SearchAPI.search(query)
+    try {
+      store.searchStore.setIsFetching(true)
 
-    return results
+      const results = await SearchAPI.search(query)
+
+      store.searchStore.setResults(results)
+      store.searchStore.setIsFetching(false)
+    } catch (e) {
+      store.searchStore.setIsFetching(false)
+    }
   }
 }

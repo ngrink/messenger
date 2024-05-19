@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
 
 import { AccessTokenDto } from '@/shared/modules/auth/dto/tokens.dto';
 import { Authenticated, CurrentUser } from '@/shared/modules/auth';
@@ -6,6 +6,7 @@ import { Authenticated, CurrentUser } from '@/shared/modules/auth';
 import { ChatsService } from './chats.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { CreateChatMessageBodyDto, CreateChatMessageDto } from './dto/create-chat-message.dto';
+import { ReadMessagesBodyDto } from './dto/read-messages.dto';
 
 @Controller('chats')
 export class ChatsController {
@@ -55,5 +56,34 @@ export class ChatsController {
     const text = data.text
 
     return this.chatsService.createChatMessage({userId, chatId, text});
+  }
+
+  @Post(':id/messages/read')
+  @Authenticated()
+  @HttpCode(200)
+  async readMessages(
+    @CurrentUser() user: AccessTokenDto,
+    @Param("id") chatId: number,
+    @Body() data: ReadMessagesBodyDto,
+  ) {
+    const userId = user.id;
+
+    await this.chatsService.readMessages(chatId, userId, data.messageIds);
+
+    return "OK"
+  }
+
+  @Post(':id/messages/readall')
+  @Authenticated()
+  @HttpCode(200)
+  async readAllMessages(
+    @CurrentUser() user: AccessTokenDto,
+    @Param("id") chatId: number,
+  ) {
+    const userId = user.id;
+
+    await this.chatsService.readAllMessages(chatId, userId);
+
+    return "OK"
   }
 }

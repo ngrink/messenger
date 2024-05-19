@@ -25,16 +25,7 @@ export const SearchInputContainer = observer(() => {
         return
       }
 
-      try {
-        searchStore.setIsFetching(true)
-
-        const results = await SearchService.search(query)
-
-        searchStore.setResults(results)
-        searchStore.setIsFetching(false)
-      } catch (e) {
-        searchStore.setIsFetching(false)
-      }
+      SearchService.search(debouncedQuery)
     }
 
     fetchSearchResults()

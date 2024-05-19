@@ -36,16 +36,17 @@ model Profile {
 }
 
 model Chat {
-  id          Int       @id @default(autoincrement())
-  type        ChatType
-  public      Boolean   @default(false)
-  createdAt   DateTime  @default(now()) @map("created_at")
-  name        String?
-  description String?
-  avatar      String?
-  link        String?
-  members     Member[]
-  messages    Message[]
+  id             Int             @id @default(autoincrement())
+  type           ChatType
+  public         Boolean         @default(false)
+  createdAt      DateTime        @default(now()) @map("created_at")
+  name           String?
+  description    String?
+  avatar         String?
+  link           String?
+  members        Member[]
+  messages       Message[]
+  unreadMessages UnreadMessage[]
 
   @@map("chats")
 }
@@ -74,6 +75,17 @@ model Message {
   attachments Attachment[]
 
   @@map("messages")
+}
+
+model UnreadMessage {
+  chatId    Int
+  userId    Int
+  messageId Int
+
+  chat Chat @relation(fields: [chatId], references: [id])
+
+  @@id([userId, chatId, messageId])
+  @@map("unread_messages")
 }
 
 model Attachment {

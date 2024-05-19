@@ -6,18 +6,22 @@ import { ChatsService } from '@/modules/chats'
 export const ChatListContainer = observer(() => {
   const { authStore, chatsStore } = useStore()
   const currentUserId = authStore.user?.id as number
+  const currentChatId = chatsStore.currentChatId as number
 
   const onItemClick = async (chatId: number) => {
     chatsStore.setCurrentChatId(chatId)
 
-    const messages = await ChatsService.getChatMessages(chatId)
-    chatsStore.setMessages(chatId, messages)
+    if (!chatsStore.messages[chatId]) {
+      const messages = await ChatsService.getChatMessages(chatId)
+      chatsStore.setMessages(chatId, messages)
+    }
   }
 
   return (
     <ChatList
       currentUserId={currentUserId}
-      chats={chatsStore.chatsList}
+      currentChatId={currentChatId}
+      chats={chatsStore.filteredChatsList}
       onItemClick={onItemClick}
     />
   )

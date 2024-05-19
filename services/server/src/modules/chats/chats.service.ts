@@ -34,6 +34,18 @@ export class ChatsService {
     return ids;
   }
 
+  async getInterlocutorIdsInPersonalChats(userId: number) {
+    const ids = await this.chatsRepository.getInterlocutorIdsInPersonalChats(userId);
+
+    return ids;
+  }
+
+  async getChatMemberIds(chatId: number) {
+    const ids = await this.chatsRepository.getChatMemberIds(chatId)
+
+    return ids
+  }
+
   async getChat(chatId: number) {
     const chat = await this.chatsRepository.getChat(chatId);
     if (!chat) {
@@ -61,5 +73,17 @@ export class ChatsService {
     }
 
     return messages;
+  }
+
+  async readMessages(chatId: number, userId: number, messageIds: number[]) {
+    await this.chatsRepository.readMessages(chatId, userId, messageIds)
+
+    return
+  }
+
+  async readAllMessages(chatId: number, userId: number) {
+    await this.chatsRepository.readAllMessages(chatId, userId)
+
+    return
   }
 }

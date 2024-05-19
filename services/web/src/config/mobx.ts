@@ -3,18 +3,18 @@ import { configurePersistable } from 'mobx-persist-store';
 import { injectStores } from '@mobx-devtools/tools';
 
 import { AuthStore } from "@/shared/modules/auth";
-import { ChatsStore } from "@/modules/chats";
 import { SearchStore } from "@/modules/search";
+import { ChatsStore } from "@/modules/chats";
 
 
 const authStore = new AuthStore();
-const chatsStore = new ChatsStore(authStore);
 const searchStore = new SearchStore();
+const chatsStore = new ChatsStore(authStore, searchStore);
 
 export const store = {
   authStore,
+  searchStore,
   chatsStore,
-  searchStore
 }
 
 export const StoreContext = createContext(store);

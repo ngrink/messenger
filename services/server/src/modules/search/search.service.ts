@@ -1,55 +1,27 @@
 import { Injectable } from '@nestjs/common';
 
-import { PrismaService } from '@/config/prisma.config';
+import { ChatsService } from '@/modules/chats/chats.service';
+import { SearchRepository } from './search.repository';
 
 @Injectable()
 export class SearchService {
   constructor(
-    private readonly prisma: PrismaService
+    private readonly searchRepository: SearchRepository,
+    private readonly chatsService: ChatsService,
+
   ) {}
 
-  async search(query: string) {
-    const users = await this.searchUsers(query);
+  async search(userId: number, query: string) {
+    let users = await this.searchRepository.searchUsers(query);
+    let chats = await this.searchRepository.searchChats(query);
+    let messages = await this.searchRepository.searchMessages(query);
+    
+    const userIds = new Set(await this.chatsService.getInterlocutorIdsInPersonalChats(userId))
+    const chatIds = new Set(await this.chatsService.getAllUserChatIds(userId))
 
-    return { users }
+    users = users.filter(user => user.id !== userId && !userIds.has(user.id))
+    chats = chats.filter(chat => !chatIds.has(chat.id))
+
+    return { users, chats, messages }
   }
-
-  async searchUsers(query: string) {
-    const users = await this.prisma.user.findMany({
-      where: {
-        OR: [
-          { 
-            profile: { 
-              name: {
-                contains: query,
-                mode: 'insensitive'
-              }
-            }
-          },
-          { 
-            username: { 
-              contains: query, 
-              mode: 'insensitive'
-            }
-          }
-        ]
-        
-      },
-      select: {
-        id: true,
-        username: true,
-        profile: true
-      }
-    })
-
-    return users
-  }
-
-  async searchChats(query: string) {}
-
-  async searchGroups(query: string) {}
-
-  async searchChannels(query: string) {}
-
-  async searchMessages(query: string) {}
 }

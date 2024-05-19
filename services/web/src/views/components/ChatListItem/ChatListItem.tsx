@@ -2,8 +2,7 @@ import { FC, FunctionComponent } from 'react'
 import { observer } from 'mobx-react-lite'
 import { MdGroup } from 'react-icons/md'
 
-import { useStore } from '@/config'
-import { ChatType } from '@/modules/chats'
+import { ChatType, UnreadMessage } from '@/modules/chats'
 import { cn } from '@/shared/utils'
 import { Avatar } from '../Avatar'
 
@@ -16,9 +15,10 @@ export type ChatListItemProps = {
     createdAt: string
     text: string
   }
-  unreadMessagesCount?: number
+  unreadMessages: UnreadMessage[]
   identifier?: string
   variant?: 'default' | 'search'
+  active: boolean
   onClick: (chatId: number) => void
 }
 
@@ -29,14 +29,12 @@ export const ChatListItem: FunctionComponent<ChatListItemProps> = observer(
     name,
     avatar,
     lastMessage,
-    unreadMessagesCount,
+    unreadMessages,
     identifier,
     variant = 'default',
+    active,
     onClick,
   }) => {
-    const { chatsStore } = useStore()
-
-    const active = id === chatsStore.currentChatId
     const avatarFallback = name
       ? name
           .split(' ')
@@ -80,12 +78,12 @@ export const ChatListItem: FunctionComponent<ChatListItemProps> = observer(
               <div
                 className={`overflow-hidden text-ellipsis whitespace-nowrap text-[13px] font-light ${active ? 'text-gray-200' : 'text-gray-500'}`}
               >
-                @{identifier}
+                {identifier && `@${identifier}`}
               </div>
             )}
 
-            {variant === 'default' && unreadMessagesCount ? (
-              <UnreadMessagesBadge count={unreadMessagesCount} />
+            {variant === 'default' && unreadMessages.length ? (
+              <UnreadMessagesBadge count={unreadMessages.length} />
             ) : null}
           </div>
         </div>

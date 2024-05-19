@@ -35,5 +35,5 @@ export class ChatsService {
 }
 
 socket.on('chats/newMessage', (message: Message) => {
-  store.chatsStore.addMessage(message.chatId, message);
+  store.chatsStore.addForeignMessage(message.chatId, message);
 })

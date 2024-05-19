@@ -1,13 +1,13 @@
 export type User = {
   id: number;
   email: string;
-  username: string;
   profile: {
-    avatar: string;
     name: string;
-    biography: string;
-    birthdate: string;
+    avatar?: string;
+    biography?: string;
+    birthdate?: string;
   }
+  username?: string;
 }
 
 export type CreateUserRequest = {

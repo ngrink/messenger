@@ -16,8 +16,8 @@ import { Avatar } from '../Avatar'
 
 type ChatDetailsProps = {
   name: string
-  avatar: string
   isHidden: boolean
+  avatar?: string
 }
 
 export const ChatDetails: FC<ChatDetailsProps> = ({

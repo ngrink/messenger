@@ -3,14 +3,28 @@ import { ChatsService } from '@/modules/chats'
 import { ChatInput } from '@/components/ChatInput'
 
 export const ChatInputContainer = () => {
-  const { chatsStore } = useStore()
+  const { chatsStore, searchStore } = useStore()
 
   const onSendMessage = async (text: string) => {
-    if (!chatsStore.currentChatId) {
-      return
-    }
+    if (chatsStore.isVirtual) {
+      let chat, messages
+      let targetUserId = chatsStore.currentUserId as number
 
-    ChatsService.createChatMessage(chatsStore.currentChatId, text)
+      chat = await ChatsService.createChat(targetUserId)
+      await ChatsService.createChatMessage(chat.id, text)
+
+      chat = await ChatsService.getChat(chat.id)
+      console.log(chat)
+      messages = await ChatsService.getChatMessages(chat.id)
+
+      chatsStore.addChat(chat)
+      chatsStore.setMessages(chat.id, messages)
+      chatsStore.setCurrentChatId(chat.id)
+
+      searchStore.removeUser(targetUserId)
+    } else {
+      ChatsService.createChatMessage(chatsStore.currentChatId as number, text)
+    }
   }
 
   return <ChatInput onSendMessage={onSendMessage} />

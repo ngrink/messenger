@@ -4,12 +4,14 @@ import { Chat } from '@/modules/chats'
 
 type ChatListProps = {
   currentUserId: number
+  currentChatId: number
   chats: Chat[]
   onItemClick: (chatId: number) => void
 }
 
 export const ChatList: FunctionComponent<ChatListProps> = ({
   currentUserId,
+  currentChatId,
   chats,
   onItemClick,
 }) => {
@@ -37,8 +39,10 @@ export const ChatList: FunctionComponent<ChatListProps> = ({
               name={name}
               avatar={avatar}
               lastMessage={chat.lastMessage}
+              unreadMessages={chat.unreadMessages}
               variant="default"
               onClick={onItemClick}
+              active={currentChatId === chat.id}
             />
           )
         })}

@@ -5,12 +5,17 @@ import { useStore } from '@/config'
 import { ChatHeader } from '@/components/ChatHeader'
 
 export const ChatHeaderContainer: FC = observer(() => {
-  const { chatsStore } = useStore()
+  const { chatsStore, searchStore } = useStore()
 
-  return (
-    <ChatHeader
-      name={chatsStore.currentChatName || ''}
-      description={'last seen recently'}
-    />
-  )
+  const name = !chatsStore.isVirtual
+    ? (chatsStore.currentChatName as string)
+    : searchStore.users.filter(
+        (user) => user.id === chatsStore.currentUserId
+      )[0].profile.name
+
+  const description = !chatsStore.isVirtual
+    ? 'last seen recently'
+    : 'last seen recently'
+
+  return <ChatHeader name={name} description={description} />
 })

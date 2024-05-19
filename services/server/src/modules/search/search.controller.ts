@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { SearchService } from './search.service';
 import { CreateSearchDto } from './dto/create-search.dto';
 import { UpdateSearchDto } from './dto/update-search.dto';
-import { Authenticated } from '@/shared/modules/auth';
+import { Authenticated, CurrentUser } from '@/shared/modules/auth';
+import { AccessTokenDto } from '@/shared/modules/auth/dto/tokens.dto';
 
 @Controller('search')
 export class SearchController {
@@ -10,7 +11,10 @@ export class SearchController {
 
   @Get()
   @Authenticated()
-  search(@Query('query') query: string) {
-    return this.searchService.search(query);
+  search(
+    @CurrentUser() user: AccessTokenDto,
+    @Query('query') query: string,
+  ) {
+    return this.searchService.search(user.id, query);
   }
 }

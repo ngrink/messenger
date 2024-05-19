@@ -29,12 +29,12 @@ export type Chat = {
   public: boolean;
   createdAt: string;
   members: Member[];
+  unreadMessages: UnreadMessage[];
   
   name?: string;
   description?: string;
   avatar?: string;
   link?: string;
-  unreadMessagesCount?: number;
   lastMessage?: {
     id: number;
     chatId: number;
@@ -65,6 +65,10 @@ export type Message = {
       avatar: string;
     }
   }
+}
+
+export type UnreadMessage = {
+  messageId: number;
 }
 
 export type Attachment = {

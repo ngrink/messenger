@@ -28,6 +28,7 @@ export class ChatsRepository {
           include: {
             user: {
               select: {
+                username: true,
                 profile: true
               }
             }
@@ -96,6 +97,7 @@ export class ChatsRepository {
           include: {
             user: {
               select: {
+                username: true,
                 profile: true
               }
             }
@@ -121,6 +123,7 @@ export class ChatsRepository {
           include: {
             user: {
               select: {
+                username: true,
                 profile: true
               }
             }
@@ -131,6 +134,14 @@ export class ChatsRepository {
             createdAt: 'desc'
           },
           take: 1
+        },
+        unreadMessages: {
+          where: {
+            userId
+          },
+          select: {
+            messageId: true
+          }
         }
       },
     })
@@ -167,6 +178,54 @@ export class ChatsRepository {
     return ids;
   }
 
+  async getInterlocutorIdsInPersonalChats(userId: number) {
+    const ids = []
+
+    const chats = await this.prisma.chat.findMany({
+      where: {
+        type: 'PERSONAL',
+        members: {
+          some: {
+            userId: userId
+          }
+        }
+      },
+      select: {
+        members: true
+      }
+    })
+
+    chats.forEach(chat => {
+      const member = chat.members.filter(member => member.userId !== userId)[0]
+      ids.push(member.userId)
+    })
+
+    return ids
+  }
+
+  async getChatMemberIds(chatId: number) {
+    const ids = []
+
+    const chats = await this.prisma.chat.findUnique({
+      where: {
+        id: chatId
+      },
+      select: {
+        members: {
+          select: {
+            userId: true
+          }
+        }
+      }
+    })
+
+    chats.members.forEach(member => {
+      ids.push(member.userId)
+    })
+
+    return ids
+  }
+
   async getChat(chatId: number) {
     const chat = await this.prisma.chat.findUnique({
       where: {
@@ -177,16 +236,25 @@ export class ChatsRepository {
           include: {
             user: {
               select: {
+                username: true,
                 profile: true
               }
             }
           }
         },
+        messages: {
+          orderBy: {
+            createdAt: 'desc'
+          },
+          take: 1
+        }
       }
     })
     if (!chat) {
       return null
     }
+
+    chat["lastMessage"] = chat.messages[0]
 
     return chat
   }
@@ -202,6 +270,7 @@ export class ChatsRepository {
         attachments: true,
         author: {
           select: {
+            username: true,
             profile: {
               select: {
                 name: true,
@@ -211,6 +280,17 @@ export class ChatsRepository {
           }
         }
       }
+    })
+
+    let userIds = await this.getChatMemberIds(data.chatId)
+    userIds = userIds.filter(userId => userId !== data.userId)
+
+    await this.prisma.unreadMessage.createMany({
+      data: userIds.map(userId => ({
+        userId: userId,
+        chatId: data.chatId,
+        messageId: message.id,
+      }))
     })
 
     return message;
@@ -225,6 +305,7 @@ export class ChatsRepository {
         attachments: true,
         author: {
           select: {
+            username: true,
             profile: {
               select: {
                 name: true,
@@ -240,5 +321,26 @@ export class ChatsRepository {
     }
 
     return messages;
+  }
+
+  async readMessages(chatId: number, userId: number, messageIds: number[]) {
+    await this.prisma.unreadMessage.deleteMany({
+      where: {
+        chatId,
+        userId,
+        messageId: {
+          in: messageIds
+        }
+      }
+    })
+  }
+
+  async readAllMessages(chatId: number, userId: number) {
+    await this.prisma.unreadMessage.deleteMany({
+      where: {
+        chatId,
+        userId,
+      }
+    })
   }
 }

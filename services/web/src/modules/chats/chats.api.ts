@@ -1,8 +1,9 @@
 import { $axios } from "@/config";
+import { Chat } from "./chats.types";
 
 export class ChatsAPI {
   static async createChat(targetUserId: number) {
-    const res = await $axios.post('/chats', {
+    const res = await $axios.post<Chat>('/chats', {
       targetUserId: targetUserId,
     })
 
