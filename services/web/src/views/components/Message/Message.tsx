@@ -30,7 +30,7 @@ export const Message: FunctionComponent<MessageProps> = ({
     .join('')
 
   return (
-    <div className={`flex items-end gap-4`}>
+    <div className={`flex w-full items-end gap-4 text-wrap`}>
       <Avatar
         image={author.profile.avatar}
         fallback={avatarFallback}
@@ -47,7 +47,7 @@ const MessageCard: FunctionComponent<MessageCardProps> = ({
   createdAt,
 }) => {
   return (
-    <Card className="flex flex-col rounded-xl bg-white p-2.5">
+    <Card className="flex max-w-[450px] flex-col rounded-xl bg-white p-2.5">
       {/* HEADER */}
       <div>
         <div className="text-xs font-medium text-slate-500">
@@ -56,7 +56,7 @@ const MessageCard: FunctionComponent<MessageCardProps> = ({
       </div>
 
       {/* CONTENT */}
-      <div className="text- text-sm font-normal">{text}</div>
+      <div className="break-words text-sm font-normal">{text}</div>
 
       {/* FOOTER */}
       <div className="flex items-center justify-between">

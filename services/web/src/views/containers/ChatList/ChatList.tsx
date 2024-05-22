@@ -11,10 +11,8 @@ export const ChatListContainer = observer(() => {
   const onItemClick = async (chatId: number) => {
     chatsStore.setCurrentChatId(chatId)
 
-    if (!chatsStore.messages[chatId]) {
-      const messages = await ChatsService.getChatMessages(chatId)
-      chatsStore.setMessages(chatId, messages)
-    }
+    const messages = await ChatsService.getChatMessages(chatId)
+    chatsStore.setMessages(chatId, messages)
   }
 
   return (

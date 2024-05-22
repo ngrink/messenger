@@ -32,8 +32,16 @@ export class ChatsService {
       store.chatsStore.addMessage(chatId, message);
     });    
   }
+
+  static async readMessages(chatId: number, messageIds: number[]) {
+    await ChatsAPI.readMessages(chatId, messageIds)
+  }
+
+  static async readAllMessages(chatId: number) {
+    await ChatsAPI.readAllMessages(chatId)
+  }
 }
 
 socket.on('chats/newMessage', (message: Message) => {
-  store.chatsStore.addForeignMessage(message.chatId, message);
+  store.chatsStore.addUnreadMessage(message.chatId, message);
 })

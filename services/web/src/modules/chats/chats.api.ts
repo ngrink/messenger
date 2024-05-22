@@ -35,4 +35,14 @@ export class ChatsAPI {
 
     return res.data
   }
+
+  static async readMessages(chatId: number, messageIds: number[]) {
+    await $axios.post(`/chats/${chatId}/messages/read`, {
+      messageIds
+    })
+  }
+
+  static async readAllMessages(chatId: number) {
+    await $axios.post(`/chats/${chatId}/messages/readall`)
+  }
 }

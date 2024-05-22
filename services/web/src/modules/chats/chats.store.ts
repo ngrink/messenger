@@ -15,9 +15,11 @@ export class ChatsStore {
   currentChatId: number | null = null
   chats: {[key: number]: Chat} = {}
   messages: {[key: number]: Message[]} = {}
+  unreadMessages: {[key: number]: Set<number>} = {}
   drafts: {[key: number]: string} = {}
 
   isOpenedDetails: boolean = false
+  isScrolledDown: boolean = false
 
   isVirtual: boolean = false
   currentUserId: number | null = null
@@ -91,7 +93,7 @@ export class ChatsStore {
   }
 
   get currentChatUnreadMessages() {
-    return this.currentChatId ? this.chats[this.currentChatId].unreadMessages : [];
+    return this.currentChatId ? this.unreadMessages[this.currentChatId] : new Set<number>();
   }
 
   get currentInterlocutor() {
@@ -136,6 +138,7 @@ export class ChatsStore {
 
     chats.forEach(chat => {
       chatsHashmap[chat.id] = chat
+      this.unreadMessages[chat.id] = new Set(chat.unreadMessages.map(c => c.messageId))
     })
 
     this.chats = chatsHashmap;
@@ -143,6 +146,7 @@ export class ChatsStore {
 
   addChat(chat: Chat) {
     this.chats[chat.id] = chat;
+    this.unreadMessages[chat.id] = new Set(chat.unreadMessages.map(c => c.messageId))
   }
 
   setMessages(chatId: number, messages: Array<Message>) {
@@ -154,14 +158,31 @@ export class ChatsStore {
     this.messages[chatId] = this.messages[chatId] ? this.messages[chatId].concat(message) : [message]
   }
 
-  addForeignMessage(chatId: number, message: Message) {
+  addUnreadMessage(chatId: number, message: Message) {
     this.addMessage(chatId, message)
-    this.chats[chatId].unreadMessages.push({messageId: message.id})
+
+    if (!this.isScrolledDown) {
+      this.chats[chatId].unreadMessages.push({messageId: message.id})
+      this.unreadMessages[chatId].add(message.id)
+    }
   }
 
   setVirtualChat(userId: number) {
     this.currentChatId = null
     this.isVirtual = true
     this.currentUserId = userId
+  }
+
+  setIsScrolledDown = (value: boolean) => {
+    this.isScrolledDown = value
+  }
+
+  resetCurrentChatUnreadMessages = () => {
+    if (!this.currentChatId) {
+      return 
+    }
+    
+    this.chats[this.currentChatId] = {...this.chats[this.currentChatId], unreadMessages: []}
+    this.unreadMessages[this.currentChatId] = new Set()
   }
 }

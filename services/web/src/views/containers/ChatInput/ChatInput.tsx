@@ -1,8 +1,10 @@
+import { observer } from 'mobx-react-lite'
+
 import { useStore } from '@/config'
 import { ChatsService } from '@/modules/chats'
 import { ChatInput } from '@/components/ChatInput'
 
-export const ChatInputContainer = () => {
+export const ChatInputContainer = observer(() => {
   const { chatsStore, searchStore } = useStore()
 
   const onSendMessage = async (text: string) => {
@@ -28,4 +30,4 @@ export const ChatInputContainer = () => {
   }
 
   return <ChatInput onSendMessage={onSendMessage} />
-}
+})
