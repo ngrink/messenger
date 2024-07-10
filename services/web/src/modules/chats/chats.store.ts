@@ -150,7 +150,7 @@ export class ChatsStore {
   }
 
   setMessages(chatId: number, messages: Array<Message>) {
-    this.messages[chatId] = messages;
+    this.messages[chatId] = messages
   }
   
   addMessage(chatId: number, message: Message) {

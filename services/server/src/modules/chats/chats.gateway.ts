@@ -8,6 +8,7 @@ import { TokensService } from '@/shared/modules/tokens';
 import { ChatsService } from './chats.service';
 import { CreateChatMessageDto } from './dto/create-chat-message.dto';
 import { AccessTokenDto } from '@/shared/modules/auth/dto/tokens.dto';
+import { AuthException } from '@/shared/modules/auth/auth.exceptions';
 
 @WebSocketGateway({
   cors: {
@@ -26,7 +27,7 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
     private readonly chatsService: ChatsService
   ) {}
 
-  afterInit() {
+  async afterInit() {
     instrument(this.server, {
       auth: {
         type: 'basic',
@@ -37,17 +38,24 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
   }
 
   async handleConnection(client: Socket, ...args: any[]) {
+    if (!client.request.headers.authorization) {
+      return
+    }
+
     const token = client.request.headers.authorization.split(' ')[1]
     const payload = this.tokenService.verifyAccessToken(token) as AccessTokenDto;
+    if (!payload) {
+      return
+    }
+    
     const userId = payload.id
-
     this.clients[client.id] = userId;
 
     const ids = await this.chatsService.getAllUserChatIds(userId)
     client.join(ids.map(id => `chat/${id}`))
   }
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     delete this.clients[client.id];
   }
 
@@ -57,12 +65,13 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
     @MessageBody() payload: CreateChatMessageDto,
   ) {
     const userId = this.clients[client.id]
-    const { chatId, text } = payload
+    const { chatId, text, attachments } = payload
 
     const message = await this.chatsService.createChatMessage({
       userId,
       chatId,
-      text
+      text,
+      attachments
     });
 
     client.broadcast.to(`chat/${chatId}`).emit('chats/newMessage', message);

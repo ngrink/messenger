@@ -1,6 +1,8 @@
 import { FunctionComponent } from 'react'
 
+import { Attachment } from '@/modules/chats'
 import { Avatar } from '../Avatar'
+import { MessageAttachments } from '../MessageAttachments'
 import { Card } from '../ui/card'
 
 export type MessageProps = {
@@ -12,6 +14,7 @@ export type MessageProps = {
     }
   }
   text: string
+  attachments: Attachment[]
   createdAt: string
 }
 
@@ -21,6 +24,7 @@ export const Message: FunctionComponent<MessageProps> = ({
   id,
   author,
   text,
+  attachments,
   createdAt,
 }) => {
   const avatarFallback = author.profile.name
@@ -36,7 +40,13 @@ export const Message: FunctionComponent<MessageProps> = ({
         fallback={avatarFallback}
         variant="small"
       />
-      <MessageCard id={id} author={author} text={text} createdAt={createdAt} />
+      <MessageCard
+        id={id}
+        author={author}
+        text={text}
+        attachments={attachments}
+        createdAt={createdAt}
+      />
     </div>
   )
 }
@@ -44,6 +54,7 @@ export const Message: FunctionComponent<MessageProps> = ({
 const MessageCard: FunctionComponent<MessageCardProps> = ({
   author,
   text,
+  attachments,
   createdAt,
 }) => {
   return (
@@ -56,7 +67,10 @@ const MessageCard: FunctionComponent<MessageCardProps> = ({
       </div>
 
       {/* CONTENT */}
-      <div className="break-words text-sm font-normal">{text}</div>
+      <div className="flex flex-col gap-2">
+        <MessageAttachments attachments={attachments} />
+        <div className="break-words text-sm font-normal">{text}</div>
+      </div>
 
       {/* FOOTER */}
       <div className="flex items-center justify-between">

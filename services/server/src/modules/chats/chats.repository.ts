@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/config/prisma.config';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { CreateChatMessageDto } from './dto/create-chat-message.dto';
+import { AttachmentDto } from './dto/create-attachment.dto';
 
 @Injectable()
 export class ChatsRepository { 
@@ -265,6 +266,11 @@ export class ChatsRepository {
         userId: data.userId,
         chatId: data.chatId,
         text: data.text,
+        attachments: {
+          connect: data.attachments?.map(attachment => ({
+            id: attachment.id
+          }))
+        }
       },
       include: {
         attachments: true,
@@ -296,6 +302,21 @@ export class ChatsRepository {
     return message;
   }
 
+  async createAttachments(attachments: AttachmentDto[]) {
+    const attachmentsDB = await this.prisma.attachment.createManyAndReturn({
+      data: attachments.map(attachment => ({
+        type: attachment.mimetype.split("/")[0],
+        mimetype: attachment.mimetype,
+        size: attachment.size,
+        originalName: attachment.originalName,
+        location: attachment.location
+      }))
+    })
+
+    return attachmentsDB
+  }
+
+
   async getChatMessages(chatId: number) {
     const messages = await this.prisma.message.findMany({
       where: {
@@ -314,6 +335,9 @@ export class ChatsRepository {
             }
           }
         }
+      },
+      orderBy: {
+        id: 'asc'
       }
     })
     if (!messages) {

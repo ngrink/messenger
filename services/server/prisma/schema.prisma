@@ -52,8 +52,8 @@ model Chat {
 }
 
 model Member {
-  chatId    Int
-  userId    Int
+  chatId    Int        @map("chat_id")
+  userId    Int        @map("user_id")
   role      MemberRole
   createdAt DateTime   @default(now()) @map("created_at")
 
@@ -66,8 +66,8 @@ model Member {
 
 model Message {
   id          Int          @id @default(autoincrement())
-  chatId      Int
-  userId      Int
+  chatId      Int          @map("chat_id")
+  userId      Int          @map("user_id")
   text        String
   createdAt   DateTime     @default(now()) @map("created_at")
   chat        Chat         @relation(fields: [chatId], references: [id])
@@ -78,9 +78,9 @@ model Message {
 }
 
 model UnreadMessage {
-  chatId    Int
-  userId    Int
-  messageId Int
+  chatId    Int @map("chat_id")
+  userId    Int @map("user_id")
+  messageId Int @map("message_id")
 
   chat Chat @relation(fields: [chatId], references: [id])
 
@@ -89,11 +89,15 @@ model UnreadMessage {
 }
 
 model Attachment {
-  id        Int            @id @default(autoincrement())
-  messageId Int
-  type      AttachmentType
-  content   String
-  message   Message        @relation(fields: [messageId], references: [id])
+  id           Int      @id @default(autoincrement())
+  location     String
+  type         String
+  mimetype     String
+  size         Int
+  originalName String
+  createdAt    DateTime @default(now()) @map("created_at")
+  messageId    Int?     @map("message_id")
+  message      Message? @relation(fields: [messageId], references: [id])
 
   @@map("attachments")
 }
@@ -110,13 +114,9 @@ enum MemberRole {
   USER
 }
 
-enum AttachmentType {
-  PHOTO
-  VIDEO
-  AUDIO
-  DOCUMENT
-  PRESENTATION
-  SPREADSHEET
-  ARCHIVE
-  FILE
-}
+// enum AttachmentType {
+//   IMAGE
+//   AUDIO
+//   VIDEO
+//   FILE
+// }

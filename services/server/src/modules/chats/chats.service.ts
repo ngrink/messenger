@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ChatsRepository } from './chats.repository';
 import { ChatsException } from './chats.exceptions';
 import { CreateChatMessageDto } from './dto/create-chat-message.dto';
+import { AttachmentDto } from './dto/create-attachment.dto';
 
 @Injectable()
 export class ChatsService {
@@ -66,6 +67,12 @@ export class ChatsService {
     return message;
   }
 
+  async createAttachments(attachments: AttachmentDto[]) {
+    const attachmentsDB = await this.chatsRepository.createAttachments(attachments) 
+
+    return attachmentsDB
+  }
+
   async getChatMessages(chatId: number) {
     const messages = await this.chatsRepository.getChatMessages(chatId);
     if (!messages) {
@@ -74,7 +81,7 @@ export class ChatsService {
 
     return messages;
   }
-
+  
   async readMessages(chatId: number, userId: number, messageIds: number[]) {
     await this.chatsRepository.readMessages(chatId, userId, messageIds)
 

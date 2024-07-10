@@ -74,7 +74,10 @@ export type UnreadMessage = {
 export type Attachment = {
   id: number;
   messageId: number;
-  type: AttachmentType
-  content: string;
+  type: string;
+  mimetype: string
+  size: number;
+  originalName: string;
+  location: string;
 }
 

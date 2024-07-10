@@ -1,0 +1,198 @@
+.gallery {
+  display: block;
+}
+
+.gallery__list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.gallery__item {
+  display: block;
+  padding: 1px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  cursor: pointer;
+
+  img {
+    transition: transform .2s ease-in;
+  }
+
+  &:hover {
+    img {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.slider {
+  display: fixed;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* *******************************************
+  1 
+******************************************** */
+.gallery__list[data-length="1"] {
+  .gallery__item[data-index="1"] {
+    flex: 1 1 100%;
+  }
+}
+
+/* *******************************************
+  2
+******************************************** */
+.gallery__list[data-length="2"] {
+  .gallery__item[data-index="1"],
+  .gallery__item[data-index="2"] {
+    flex: 1 1 100%;
+  }
+}
+
+/* *******************************************
+  3
+******************************************** */
+.gallery__list[data-length="3"] {
+  .gallery__item[data-index="1"] {
+    flex: 1 1 100%;
+  }
+  .gallery__item[data-index="2"],
+  .gallery__item[data-index="3"] {
+    flex: 1 1 50%;
+  }
+}
+
+/* *******************************************
+  4
+******************************************** */
+.gallery__list[data-length="4"] {
+  .gallery__item[data-index="1"] {
+    flex: 1 1 100%;
+  }
+  .gallery__item[data-index="2"],
+  .gallery__item[data-index="3"],
+  .gallery__item[data-index="4"] {
+    flex: 1 1 33.33%;
+  }
+}
+
+/* *******************************************
+  5
+******************************************** */
+.gallery__list[data-length="5"] {
+  .gallery__item[data-index="1"] {
+    flex: 1 1 100%;
+  }
+  .gallery__item[data-index="2"],
+  .gallery__item[data-index="3"] {
+    flex: 1 1 50%;
+  }
+  .gallery__item[data-index="4"],
+  .gallery__item[data-index="5"] {
+    flex: 1 1 50%;
+  }
+}
+
+/* *******************************************
+  6
+******************************************** */
+.gallery__list[data-length="6"] {
+  .gallery__item[data-index="1"] {
+    flex: 1 1 100%;
+  }
+  .gallery__item[data-index="2"],
+  .gallery__item[data-index="3"] {
+    flex: 1 1 50%;
+  }
+  .gallery__item[data-index="4"],
+  .gallery__item[data-index="5"],
+  .gallery__item[data-index="6"] {
+    flex: 1 1 33.33%;
+  }
+}
+
+/* *******************************************
+  7
+******************************************** */
+.gallery__list[data-length="7"] {
+  .gallery__item[data-index="1"] {
+    flex: 1 1 100%;
+  }
+  .gallery__item[data-index="2"],
+  .gallery__item[data-index="3"] {
+    flex: 1 1 50%;
+  }
+  .gallery__item[data-index="4"],
+  .gallery__item[data-index="5"],
+  .gallery__item[data-index="6"],
+  .gallery__item[data-index="7"] {
+    flex: 1 1 25%;
+  }
+}
+
+/* *******************************************
+  8
+******************************************** */
+.gallery__list[data-length="8"] {
+  .gallery__item[data-index="1"] {
+    flex: 1 1 100%;
+  }
+  .gallery__item[data-index="2"],
+  .gallery__item[data-index="3"] {
+    flex: 1 1 50%;
+  }
+  .gallery__item[data-index="4"],
+  .gallery__item[data-index="5"],
+  .gallery__item[data-index="6"],
+  .gallery__item[data-index="7"],
+  .gallery__item[data-index="8"] {
+    flex: 1 1 20%;
+  }
+}
+
+/* *******************************************
+  9
+******************************************** */
+.gallery__list[data-length="9"] {
+  .gallery__item[data-index="1"] {
+    flex: 1 1 100%;
+  }
+  .gallery__item[data-index="2"],
+  .gallery__item[data-index="3"],
+  .gallery__item[data-index="4"] {
+    flex: 1 1 33.33%;
+  }
+  .gallery__item[data-index="5"],
+  .gallery__item[data-index="6"],
+  .gallery__item[data-index="7"],
+  .gallery__item[data-index="8"],
+  .gallery__item[data-index="9"] {
+    flex: 1 1 20%;
+  }
+}
+
+/* *******************************************
+  10
+******************************************** */
+.gallery__list[data-length="10"] {
+  .gallery__item[data-index="1"] {
+    flex: 1 1 100%;
+  }
+
+  .gallery__item[data-index="2"],
+  .gallery__item[data-index="3"],
+  .gallery__item[data-index="4"] {
+    flex: 1 1 33.33%;
+  }
+
+  .gallery__item[data-index="5"],
+  .gallery__item[data-index="6"],
+  .gallery__item[data-index="7"],
+  .gallery__item[data-index="8"],
+  .gallery__item[data-index="9"],
+  .gallery__item[data-index="10"] {
+    flex: 1 1 calc(100% / 6);
+  }
+}

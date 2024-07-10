@@ -1,5 +1,5 @@
 import { $axios } from "@/config";
-import { Chat } from "./chats.types";
+import { Attachment, Chat } from "./chats.types";
 
 export class ChatsAPI {
   static async createChat(targetUserId: number) {
@@ -23,7 +23,7 @@ export class ChatsAPI {
   }
 
   static async getChatMessages(chatId: number) {
-    const res =  await $axios.get(`/chats/${chatId}/messages`)
+    const res =  await $axios.get(`/chats/${chatId}/messages/all`)
 
     return res.data
   }
@@ -32,6 +32,12 @@ export class ChatsAPI {
     const res =  await $axios.post(`/chats/${chatId}/messages`, {
       text: text,
     })
+
+    return res.data
+  }
+
+  static async createAttachments(chatId: number, attachments: File[]) {
+    const res =  await $axios.postForm<Attachment[]>(`/chats/${chatId}/attachments`, { attachments }, { timeout: 1000 * 60 * 60 })
 
     return res.data
   }

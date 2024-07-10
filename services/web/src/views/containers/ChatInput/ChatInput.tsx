@@ -7,16 +7,15 @@ import { ChatInput } from '@/components/ChatInput'
 export const ChatInputContainer = observer(() => {
   const { chatsStore, searchStore } = useStore()
 
-  const onSendMessage = async (text: string) => {
+  const onSendMessage = async (text: string, attachments?: File[]) => {
     if (chatsStore.isVirtual) {
       let chat, messages
       let targetUserId = chatsStore.currentUserId as number
 
       chat = await ChatsService.createChat(targetUserId)
-      await ChatsService.createChatMessage(chat.id, text)
+      await ChatsService.createChatMessage(chat.id, text, attachments)
 
       chat = await ChatsService.getChat(chat.id)
-      console.log(chat)
       messages = await ChatsService.getChatMessages(chat.id)
 
       chatsStore.addChat(chat)
@@ -25,7 +24,11 @@ export const ChatInputContainer = observer(() => {
 
       searchStore.removeUser(targetUserId)
     } else {
-      ChatsService.createChatMessage(chatsStore.currentChatId as number, text)
+      ChatsService.createChatMessage(
+        chatsStore.currentChatId as number,
+        text,
+        attachments
+      )
     }
   }
 
