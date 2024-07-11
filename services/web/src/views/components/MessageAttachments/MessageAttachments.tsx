@@ -15,10 +15,19 @@ import {
 
 type MessageAttachmentsProps = {
   attachments: Attachment[]
+  author: {
+    profile: {
+      name: string
+      avatar: string
+    }
+  }
+  createdAt: string
 }
 
 export const MessageAttachments: FC<MessageAttachmentsProps> = ({
   attachments,
+  author,
+  createdAt,
 }) => {
   if (!attachments.length) {
     return null
@@ -59,7 +68,11 @@ export const MessageAttachments: FC<MessageAttachmentsProps> = ({
 
   return (
     <div className="flex w-[450px] max-w-full flex-col gap-2 pt-2">
-      <ImageAttachmentGroup data={data.images} />
+      <ImageAttachmentGroup
+        data={data.images}
+        author={author}
+        createdAt={createdAt}
+      />
       <VideoAttachmentGroup data={data.videos} />
       <AudioAttachmentGroup data={data.audios} />
       <FileAttachmentGroup data={data.files} />

@@ -68,7 +68,11 @@ const MessageCard: FunctionComponent<MessageCardProps> = ({
 
       {/* CONTENT */}
       <div className="flex flex-col gap-2">
-        <MessageAttachments attachments={attachments} />
+        <MessageAttachments
+          attachments={attachments}
+          author={author}
+          createdAt={createdAt}
+        />
         <div className="break-words text-sm font-normal">{text}</div>
       </div>
 

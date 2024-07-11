@@ -1,8 +1,17 @@
 import { FC, useState } from 'react'
+
+import { ImageSlider } from '../ImageSlider/ImageSlider'
 import cl from './ImageAttachment.module.scss'
 
 export type ImageAttachmentGroupProps = {
   data: ImageAttachmentProps[]
+  author: {
+    profile: {
+      name: string
+      avatar: string
+    }
+  }
+  createdAt: string
 }
 
 export type ImageAttachmentProps = {
@@ -11,6 +20,8 @@ export type ImageAttachmentProps = {
 
 export const ImageAttachmentGroup: FC<ImageAttachmentGroupProps> = ({
   data,
+  author,
+  createdAt,
 }) => {
   if (data.length === 0) {
     return null
@@ -29,6 +40,14 @@ export const ImageAttachmentGroup: FC<ImageAttachmentGroupProps> = ({
     setIsSliderOpen(false)
   }
 
+  const nextSlide = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % data.length)
+  }
+
+  const prevSlide = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + data.length) % data.length)
+  }
+
   return (
     <div className={cl.gallery}>
       <ul className={cl.galleryList} data-length={data.length}>
@@ -43,10 +62,15 @@ export const ImageAttachmentGroup: FC<ImageAttachmentGroupProps> = ({
           </li>
         ))}
       </ul>
-      <Slider
+      <ImageSlider
         data={data}
+        author={author}
+        createdAt={createdAt}
         current={currentImageIndex}
         isOpen={isSliderOpen}
+        setCurrent={setCurrentImageIndex}
+        prev={prevSlide}
+        next={nextSlide}
         close={closeSlider}
       />
     </div>
@@ -57,25 +81,6 @@ export const ImageAttachment: FC<ImageAttachmentProps> = ({ src }) => {
   return (
     <div className="h-full w-full bg-[#333]">
       <img src={src} className="h-full w-full object-cover" />
-    </div>
-  )
-}
-
-type SliderProps = {
-  data: ImageAttachmentProps[]
-  current: number
-  isOpen: boolean
-  close: () => void
-}
-
-export const Slider: FC<SliderProps> = ({ data, current, isOpen, close }) => {
-  return (
-    <div className="fixed left-0 top-0 z-[100] h-screen w-screen bg-[#030b16] bg-opacity-15 px-32 py-32">
-      <ul className="h-full w-full">
-        <li className="aspect-video h-full w-full" key={data[current].src}>
-          <img src={data[current].src} className="h-full w-full object-cover" />
-        </li>
-      </ul>
     </div>
   )
 }
