@@ -7,74 +7,97 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
-model Account {
-  id        Int          @id @default(autoincrement())
-  username  String?      @unique
-  email     String       @unique
-  password  String
-  createdAt DateTime     @default(now()) @map("created_at")
-  updatedAt DateTime     @updatedAt @map("updated_at")
-  profile   Profile?
-  chats     ChatMember[]
-  messages  Message[]
+model User {
+  id           Int       @id @default(autoincrement())
+  username     String?   @unique
+  email        String    @unique
+  password     String
+  online       Boolean   @default(false)
+  lastOnlineAt DateTime? @map("last_online_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  profile      Profile?
+  chats        Member[]
+  messages     Message[]
 
-  @@map("accounts")
+  @@map("users")
 }
 
 model Profile {
-  accountId   Int       @id
-  name        String
-  avatar      String?
-  description String?
-  birthdate   DateTime?
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  account     Account   @relation(fields: [accountId], references: [id])
+  userId    Int       @id @map("user_id")
+  name      String
+  avatar    String?
+  biography String?
+  birthdate DateTime?
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  user      User      @relation(fields: [userId], references: [id])
 
   @@map("profiles")
 }
 
 model Chat {
-  id          Int          @id @default(autoincrement())
-  type        ChatType
-  name        String?
-  avatar      String?
-  description String?
-  public      Boolean      @default(false)
-  members     ChatMember[]
-  messages    Message[]
+  id             Int             @id @default(autoincrement())
+  type           ChatType
+  public         Boolean         @default(false)
+  createdAt      DateTime        @default(now()) @map("created_at")
+  name           String?
+  description    String?
+  avatar         String?
+  link           String?
+  members        Member[]
+  messages       Message[]
+  unreadMessages UnreadMessage[]
 
   @@map("chats")
 }
 
-model ChatMember {
-  chatId    Int
-  accountId Int
+model Member {
+  chatId    Int        @map("chat_id")
+  userId    Int        @map("user_id")
   role      MemberRole
-  chat      Chat       @relation(fields: [chatId], references: [id])
-  account   Account    @relation(fields: [accountId], references: [id])
+  createdAt DateTime   @default(now()) @map("created_at")
 
-  @@id([chatId, accountId])
+  user User @relation(fields: [userId], references: [id])
+  chat Chat @relation(fields: [chatId], references: [id])
+
+  @@id([chatId, userId])
   @@map("members")
 }
 
 model Message {
   id          Int          @id @default(autoincrement())
-  chatId      Int
-  accountId   Int
+  chatId      Int          @map("chat_id")
+  userId      Int          @map("user_id")
   text        String
-  author      Account      @relation(fields: [accountId], references: [id])
+  createdAt   DateTime     @default(now()) @map("created_at")
   chat        Chat         @relation(fields: [chatId], references: [id])
+  author      User         @relation(fields: [userId], references: [id])
   attachments Attachment[]
 
   @@map("messages")
 }
 
+model UnreadMessage {
+  chatId    Int @map("chat_id")
+  userId    Int @map("user_id")
+  messageId Int @map("message_id")
+
+  chat Chat @relation(fields: [chatId], references: [id])
+
+  @@id([userId, chatId, messageId])
+  @@map("unread_messages")
+}
+
 model Attachment {
-  id        Int            @id @default(autoincrement())
-  messageId Int
-  type      AttachmentType
-  content   String
-  message   Message        @relation(fields: [messageId], references: [id])
+  id           Int      @id @default(autoincrement())
+  location     String
+  type         String
+  mimetype     String
+  size         Int
+  originalName String
+  createdAt    DateTime @default(now()) @map("created_at")
+  messageId    Int?     @map("message_id")
+  message      Message? @relation(fields: [messageId], references: [id])
 
   @@map("attachments")
 }
@@ -91,13 +114,9 @@ enum MemberRole {
   USER
 }
 
-enum AttachmentType {
-  PHOTO
-  VIDEO
-  AUDIO
-  DOCUMENT
-  PRESENTATION
-  SPREADSHEET
-  ARCHIVE
-  FILE
-}
+// enum AttachmentType {
+//   IMAGE
+//   AUDIO
+//   VIDEO
+//   FILE
+// }

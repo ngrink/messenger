@@ -1,11 +1,18 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 
-import { PrismaModule } from './config/prisma.config';
-import { TokensModule } from './shared/modules/tokens';
-import { AccountsModule } from './shared/modules/accounts';
-import { AuthModule, AuthGuard } from './shared/modules/auth';
+import { MethodOverrideMiddleware } from '@/shared/middlewares/method-override.middleware';
+import { LoggerMiddleware } from '@/shared/middlewares/logger.middleware';
+
+import { PrismaModule } from '@/config/prisma.config';
+import { TokensModule } from '@/shared/modules/tokens';
+import { UsersModule } from '@/shared/modules/users';
+import { AuthModule, AuthGuard } from '@/shared/modules/auth';
+import { StorageModule } from '@/shared/modules/storage';
+
+import { SearchModule } from './modules/search/search.module';
+import { ChatsModule } from './modules/chats/chats.module';
 
 @Module({
   imports: [
@@ -14,15 +21,23 @@ import { AuthModule, AuthGuard } from './shared/modules/auth';
     }),
     PrismaModule,
     TokensModule,
-    AccountsModule,
+    UsersModule,
     AuthModule,
+    StorageModule,
+    SearchModule,
+    ChatsModule,
   ],
   controllers: [],
   providers: [
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    }
+    },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(MethodOverrideMiddleware).forRoutes('*');
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

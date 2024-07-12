@@ -2,17 +2,21 @@ import { Controller, Get, Post, Body, Res, HttpCode, HttpStatus } from '@nestjs/
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
+import { UsersService } from '@/shared/modules/users';
 import { Cookies } from '@/shared/decorators';
 
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
 import { Authenticated, CurrentUser } from './decorators';
-import { AccessTokenDto, RefreshTokenDto } from './dto/tokens.dto';
+import { LoginDto } from './dto/login.dto';
+import { AccessTokenDto } from './dto/tokens.dto';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService, 
+    private readonly usersService: UsersService
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -50,6 +54,17 @@ export class AuthController {
       path: "/api/v1/auth/refresh"
     })
 
-    return { accessToken: tokens.accessToken} 
+    return { accessToken: tokens.accessToken } 
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('me')
+  @Authenticated()
+  async getAuthUser(
+    @CurrentUser() user: AccessTokenDto,
+  ) {
+    const userData = await this.usersService.getUser(user.id)
+
+    return { user: userData } 
   }
 }
