@@ -1,5 +1,7 @@
 import { store } from "@/config";
-import { AuthAPI, LoginRequest } from "./auth.api";
+
+import { AuthAPI } from "./auth.api";
+import { LoginRequest } from "./auth.types";
 
 export class AuthService {
   static async login(data: LoginRequest) {

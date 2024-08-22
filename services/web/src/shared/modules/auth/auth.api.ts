@@ -1,19 +1,5 @@
 import { $axios } from "@/config";
-import { User } from "@/shared/modules/users";
-
-export type LoginRequest = {
-  login: string
-  password: string
-}
-
-export type LoginResponse = {
-  user: User
-  accessToken: string
-}
-
-export type GetAuthUserResponse = {
-  user: User
-}
+import { LoginRequest, LoginResponse, GetAuthUserResponse } from "./auth.types";
 
 export class AuthAPI {
   static async login(data: LoginRequest) {
