@@ -5,3 +5,4 @@ export * from './auth.types'
 
 // hocs
 export * from './hocs/withAuth'
+export * from './hocs/withNoAuth'
