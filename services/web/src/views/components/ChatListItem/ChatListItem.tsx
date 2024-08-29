@@ -15,7 +15,7 @@ export type ChatListItemProps = {
     createdAt: string
     text: string
   }
-  unreadMessages: UnreadMessage[]
+  unreadMessages?: UnreadMessage[]
   identifier?: string
   variant?: 'default' | 'search'
   active: boolean
@@ -82,8 +82,8 @@ export const ChatListItem: FunctionComponent<ChatListItemProps> = observer(
               </div>
             )}
 
-            {variant === 'default' && unreadMessages.length ? (
-              <UnreadMessagesBadge count={unreadMessages.length} />
+            {variant === 'default' && unreadMessages?.length ? (
+              <UnreadMessagesBadge count={unreadMessages?.length} />
             ) : null}
           </div>
         </div>

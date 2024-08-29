@@ -30,7 +30,7 @@ export type Chat = {
   createdAt: string;
   members: Member[];
   unreadMessages: UnreadMessage[];
-  
+
   name?: string;
   description?: string;
   avatar?: string;
@@ -80,4 +80,3 @@ export type Attachment = {
   originalName: string;
   location: string;
 }
-

@@ -1,13 +1,16 @@
 import { FC, useEffect, useRef, useState } from 'react'
+import { ObservableSet } from 'mobx'
 import { FiChevronDown } from 'react-icons/fi'
 
 import useOnScreen from '@/shared/hooks/useOnScreen'
-import { Message, MessageProps } from '../Message'
+import { Message } from '../Message'
+import { MessageCardProps } from '../MessageCard'
+import { UnreadMessage } from '../UnreadMessage'
 
 type ChatContentProps = {
   id: number
-  messages: MessageProps[]
-  unreadMessages: Set<number>
+  messages: MessageCardProps[]
+  unreadMessages: ObservableSet<number>
   onScrollChange: (isScrolledDown: boolean) => void
   onScrollDownBtn: () => void
 }
@@ -83,7 +86,10 @@ export const ChatContent: FC<ChatContentProps> = ({
                   </div>
 
                   <div className="list-none px-4">
-                    <Message {...message} />
+                    {unreadMessages.has(message.id)
+                      ? <UnreadMessage {...message} />
+                      : <Message {...message} />
+                    }
                   </div>
                 </li>
               )
@@ -91,7 +97,10 @@ export const ChatContent: FC<ChatContentProps> = ({
 
             return (
               <li key={message.id} className="list-none px-4">
-                <Message {...message} />
+                {unreadMessages.has(message.id)
+                  ? <UnreadMessage {...message} />
+                  : <Message {...message} />
+                }
               </li>
             )
           })}

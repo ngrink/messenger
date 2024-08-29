@@ -33,6 +33,20 @@ const formSchema = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
+  .superRefine(({ password }, ctx) => {
+    const hasUppercase = /[A-Z]/.test(password)
+    const hasLowercase = /[a-z]/.test(password)
+    const hasNumber = /[0-9]/.test(password)
+    const hasSpecialChar = /[`!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?~]/.test(password)
+
+    if (!hasUppercase || !hasLowercase || !hasNumber || !hasSpecialChar) {
+      ctx.addIssue({
+        code: "custom",
+        message: `The password must contain uppercase and lowercase letters, numbers, and special characters`,
+        path: ["password"]
+      })
+    }
+  })
 
 export const RegistrationScreen = () => {
   return (
@@ -80,6 +94,7 @@ export const RegistrationForm = () => {
       password: '',
       confirmPassword: '',
     },
+    mode: "onChange"
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {

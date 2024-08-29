@@ -1,7 +1,8 @@
 import React, { Suspense, useEffect } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 
-import { useStore, socket } from './config/'
+import { useStore, socket } from '@/config'
+import { withAuth, withNoAuth } from '@/shared/modules/auth'
 import './assets/css/app.css'
 
 const RegistrationScreen = React.lazy(() => import('@/screens/Registration'))
@@ -29,11 +30,11 @@ function App() {
     <div className="App">
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
-          <Route>
+          <Route Component={withNoAuth(Outlet)}>
             <Route path="/signup" element={<RegistrationScreen />} />
             <Route path="/login" element={<LoginScreen />} />
           </Route>
-          <Route>
+          <Route Component={withAuth(Outlet)}>
             <Route path="/" element={<Navigate to="/chats" replace={true} />} />
             <Route path="/chats" element={<ChatScreen />} />
           </Route>

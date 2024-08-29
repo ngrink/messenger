@@ -18,6 +18,7 @@ import { ChatsModule } from './modules/chats/chats.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV}.local`
     }),
     PrismaModule,
     TokensModule,

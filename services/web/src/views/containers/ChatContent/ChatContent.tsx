@@ -1,4 +1,5 @@
 import { observer } from 'mobx-react-lite'
+import { ObservableSet } from 'mobx'
 
 import { ChatContent } from '@/components/ChatContent'
 import { useStore } from '@/config'
@@ -19,7 +20,7 @@ export const ChatContentContainer = observer(() => {
       <ChatContent
         id={chatsStore.currentChatId as number}
         messages={[]}
-        unreadMessages={new Set()}
+        unreadMessages={new ObservableSet()}
         onScrollChange={() => {}}
         onScrollDownBtn={() => {}}
       />
