@@ -47,7 +47,7 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
     if (!payload) {
       return
     }
-    
+
     const userId = payload.id
     this.clients[client.id] = userId;
 
@@ -76,7 +76,7 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
 
     client.broadcast.to(`chat/${chatId}`).emit('chats/newMessage', message);
 
-    return message; 
+    return message;
   }
 
   @SubscribeMessage('chats/getChatMessages')
@@ -86,6 +86,6 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
   ) {
     const messages = await this.chatsService.getChatMessages(chatId);
 
-    return messages; 
+    return messages;
   }
 }

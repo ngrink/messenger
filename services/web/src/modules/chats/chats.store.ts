@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx"
+import { makeAutoObservable, ObservableSet } from "mobx"
 import { makePersistable } from "mobx-persist-store";
 
 import { AuthStore } from "@/shared/modules/auth";
@@ -15,7 +15,7 @@ export class ChatsStore {
   currentChatId: number | null = null
   chats: {[key: number]: Chat} = {}
   messages: {[key: number]: Message[]} = {}
-  unreadMessages: {[key: number]: Set<number>} = {}
+  unreadMessages: {[key: number]: ObservableSet<number>} = {}
   drafts: {[key: number]: string} = {}
 
   isOpenedDetails: boolean = false
@@ -33,7 +33,6 @@ export class ChatsStore {
       name: 'ChatsStore',
       properties: [
         'isOpenedDetails',
-        // 'currentChatId',
         'drafts'
       ],
       storage: window.localStorage
@@ -43,7 +42,7 @@ export class ChatsStore {
   get filteredChatsList() {
     const query = this.searchStore.query.toLowerCase()
     if (!query) {
-      return Object.values(this.chats); 
+      return Object.values(this.chats);
     }
 
     const chats = Object.values(this.chats).filter(chat => {
@@ -93,7 +92,7 @@ export class ChatsStore {
   }
 
   get currentChatUnreadMessages() {
-    return this.currentChatId ? this.unreadMessages[this.currentChatId] : new Set<number>();
+    return this.currentChatId ? this.unreadMessages[this.currentChatId] : new ObservableSet<number>();
   }
 
   get currentInterlocutor() {
@@ -108,7 +107,7 @@ export class ChatsStore {
 
   get currentDraftMessage() {
     return this.currentChatId? this.drafts[this.currentChatId] : null;
-  } 
+  }
 
   openDetails() {
     this.isOpenedDetails = true;
@@ -138,7 +137,7 @@ export class ChatsStore {
 
     chats.forEach(chat => {
       chatsHashmap[chat.id] = chat
-      this.unreadMessages[chat.id] = new Set(chat.unreadMessages.map(c => c.messageId))
+      this.unreadMessages[chat.id] = new ObservableSet(chat.unreadMessages.map(c => c.messageId))
     })
 
     this.chats = chatsHashmap;
@@ -146,13 +145,13 @@ export class ChatsStore {
 
   addChat(chat: Chat) {
     this.chats[chat.id] = chat;
-    this.unreadMessages[chat.id] = new Set(chat.unreadMessages.map(c => c.messageId))
+    this.unreadMessages[chat.id] = new ObservableSet(chat.unreadMessages.map(c => c.messageId))
   }
 
   setMessages(chatId: number, messages: Array<Message>) {
     this.messages[chatId] = messages
   }
-  
+
   addMessage(chatId: number, message: Message) {
     this.chats[chatId] = {...this.chats[chatId], lastMessage: message}
     this.messages[chatId] = this.messages[chatId] ? this.messages[chatId].concat(message) : [message]
@@ -161,10 +160,8 @@ export class ChatsStore {
   addUnreadMessage(chatId: number, message: Message) {
     this.addMessage(chatId, message)
 
-    if (!this.isScrolledDown) {
-      this.chats[chatId].unreadMessages.push({messageId: message.id})
-      this.unreadMessages[chatId].add(message.id)
-    }
+    this.chats[chatId].unreadMessages.push({messageId: message.id})
+    this.unreadMessages[chatId].add(message.id)
   }
 
   setVirtualChat(userId: number) {
@@ -179,10 +176,19 @@ export class ChatsStore {
 
   resetCurrentChatUnreadMessages = () => {
     if (!this.currentChatId) {
-      return 
+      return
     }
-    
+
     this.chats[this.currentChatId] = {...this.chats[this.currentChatId], unreadMessages: []}
-    this.unreadMessages[this.currentChatId] = new Set()
+    this.unreadMessages[this.currentChatId] = new ObservableSet()
+  }
+
+  readMessage = (messageId: number) => {
+    if (!this.currentChatId) {
+      return
+    }
+
+    this.chats[this.currentChatId].unreadMessages = this.chats[this.currentChatId].unreadMessages.filter(msg => msg.messageId != messageId)
+    this.unreadMessages[this.currentChatId].delete(messageId)
   }
 }

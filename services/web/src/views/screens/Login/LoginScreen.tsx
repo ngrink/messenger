@@ -86,7 +86,6 @@ export const LoginForm = () => {
           form.setError(
             "root.serverError",
             {
-              type: 400,
               message: error.message,
             },
             {
