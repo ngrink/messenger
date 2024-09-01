@@ -12,6 +12,13 @@ export class AuthService {
     store.authStore.setAuth(user, accessToken)
   }
 
+  static async loginByToken(accessToken: string) {
+    store.authStore.setToken(accessToken)
+
+    const { user } = await this.getAuthUser()
+    store.authStore.setAuth(user, accessToken)
+  }
+
   static async logout() {
     store.authStore.resetAuth()
   }

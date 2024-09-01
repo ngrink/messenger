@@ -1,4 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -21,6 +22,18 @@ const formSchema = z.object({
 });
 
 export const LoginScreen = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    (async () => {
+      const token = searchParams.get('accessToken')
+      if (token) {
+        await AuthService.loginByToken(token)
+      }
+    })()
+  }, [])
+
   return (
     <div className="w-full h-screen lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
       <div className="hidden bg-muted lg:block">
@@ -147,7 +160,10 @@ export const LoginForm = () => {
           Login
         </Button>
 
-        <Button className="w-full gap-2 bg-slate-900 hover:bg-slate-600">
+        <Button className="w-full gap-2 bg-slate-900 hover:bg-slate-600" onClick={(e) => {
+          e.preventDefault();
+          window.location.href=`${import.meta.env.VITE_API_URL}/oauth/github`;
+        }}>
           <img
             src="/assets/icons/github.svg"
             alt="github icon"

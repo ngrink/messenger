@@ -1,20 +1,19 @@
-import { Controller, Get, Post, Body, Res, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
 import { UsersService } from '@/shared/modules/users';
 import { Cookies } from '@/shared/decorators';
 
-import { AuthService } from './auth.service';
 import { Authenticated, CurrentUser } from './decorators';
-import { LoginDto } from './dto/login.dto';
-import { AccessTokenDto } from './dto/tokens.dto';
+import { LoginDto, AccessTokenDto} from './dto';
+import { AuthService } from './auth.service';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly authService: AuthService, 
+    private readonly authService: AuthService,
     private readonly usersService: UsersService
   ) {}
 
@@ -54,7 +53,7 @@ export class AuthController {
       path: "/api/v1/auth/refresh"
     })
 
-    return { accessToken: tokens.accessToken } 
+    return { accessToken: tokens.accessToken }
   }
 
   @HttpCode(HttpStatus.OK)
@@ -65,6 +64,6 @@ export class AuthController {
   ) {
     const userData = await this.usersService.getUser(user.id)
 
-    return { user: userData } 
+    return { user: userData }
   }
 }

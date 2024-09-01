@@ -9,6 +9,7 @@ import { PrismaModule } from '@/config/prisma.config';
 import { TokensModule } from '@/shared/modules/tokens';
 import { UsersModule } from '@/shared/modules/users';
 import { AuthModule, AuthGuard } from '@/shared/modules/auth';
+import { OAuthModule } from '@/shared/modules/oauth';
 import { StorageModule } from '@/shared/modules/storage';
 
 import { SearchModule } from './modules/search/search.module';
@@ -24,6 +25,7 @@ import { ChatsModule } from './modules/chats/chats.module';
     TokensModule,
     UsersModule,
     AuthModule,
+    OAuthModule,
     StorageModule,
     SearchModule,
     ChatsModule,

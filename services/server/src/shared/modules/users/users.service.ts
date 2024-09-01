@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 
+import { CreateOAuthUserDto, CreateUserDto, UpdateProfileDto } from './dto';
 import { UsersRepository } from './users.repository';
 import { UsersException } from './users.exceptions';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -27,6 +26,25 @@ export class UsersService {
     return user;
   }
 
+  async createUserByProvider(data: CreateOAuthUserDto) {
+    // check if user not exists
+    const userDB = await this.usersRepository.getUserByProvider(data.provider, data.providerSub)
+    if (userDB) {
+      throw UsersException.UserExists();
+    }
+
+    // check if email is not used
+    const userEmailDB = await this.usersRepository.getUserByEmail(data.email)
+    if (userEmailDB) {
+      delete data.email
+    }
+
+    // save user to DB
+    const user = this.usersRepository.createUserByProvider(data)
+
+    return user;
+  }
+
   async getAllUsers() {
     const users = this.usersRepository.getAllUsers()
 
@@ -44,6 +62,15 @@ export class UsersService {
 
   async getUserByLogin(login: string) {
     const user = this.usersRepository.getUserByLogin(login)
+    if (!user) {
+      throw UsersException.UserNotFound();
+    }
+
+    return user;
+  }
+
+  async getUserByProvider(provider: string, providerSub: string) {
+    const user = this.usersRepository.getUserByProvider(provider, providerSub)
     if (!user) {
       throw UsersException.UserNotFound();
     }

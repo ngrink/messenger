@@ -1,9 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
-import { PrismaService } from "src/config/prisma.config";
-
-import { UpdateProfileDto } from "./dto/update-profile.dto";
-import { CreateUserDto } from "./dto/create-user.dto";
+import { PrismaService } from "@/config/prisma.config";
+import { CreateOAuthUserDto, CreateUserDto, UpdateProfileDto } from "./dto";
 
 @Injectable()
 export class UsersRepository {
@@ -14,6 +12,28 @@ export class UsersRepository {
       data: {
         email: data.email,
         password: data.password,
+        profile: {
+          create: {
+            name: data.name,
+          }
+        }
+      },
+      include: {
+        profile: true
+      }
+    })
+
+    delete user.password;
+
+    return user;
+  }
+
+  async createUserByProvider(data: CreateOAuthUserDto) {
+    const user = await this.prisma.user.create({
+      data: {
+        email: data.email,
+        provider: data.provider,
+        providerSub: data.providerSub,
         profile: {
           create: {
             name: data.name,
@@ -96,6 +116,17 @@ export class UsersRepository {
     return user;
   }
 
+
+  async getUserByProvider(provider: string, providerSub: string) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        provider,
+        providerSub
+      },
+    })
+
+    return user;
+  }
 
   async updateProfile(userId: number, data: UpdateProfileDto) {
     const profile = await this.prisma.profile.update({

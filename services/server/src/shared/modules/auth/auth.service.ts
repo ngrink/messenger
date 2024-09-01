@@ -17,7 +17,7 @@ export class AuthService {
 
   async login(user: User) {
     const tokens = await this.generateTokens(user)
-    
+
     return tokens
   }
 
@@ -48,7 +48,7 @@ export class AuthService {
     }
 
     const user = await this.usersService.getUser(token.id)
-    const tokens = await this.generateTokens(user) 
+    const tokens = await this.generateTokens(user)
 
     return tokens
   }

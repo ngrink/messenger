@@ -192,7 +192,10 @@ export const RegistrationForm = () => {
           Sign up
         </Button>
 
-        <Button className="w-full gap-2 bg-slate-900 hover:bg-slate-600">
+        <Button className="w-full gap-2 bg-slate-900 hover:bg-slate-600" onClick={(e) => {
+          e.preventDefault();
+          window.location.href=`${import.meta.env.VITE_API_URL}/oauth/github`;
+        }}>
           <img
             src="/assets/icons/github.svg"
             alt="github icon"

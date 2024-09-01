@@ -1,6 +1,10 @@
 import { BadRequestException, NotFoundException } from "@nestjs/common";
 
 export class UsersException {
+  static UserExists() {
+    return new BadRequestException('User already exists', 'USER_EXISTS')
+  }
+
 	static UserEmailExists() {
 		return new BadRequestException('User with that email already exists', 'USER_EMAIL_EXISTS')
 	}
