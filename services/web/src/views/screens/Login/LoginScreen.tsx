@@ -22,7 +22,6 @@ const formSchema = z.object({
 });
 
 export const LoginScreen = () => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
@@ -160,7 +159,7 @@ export const LoginForm = () => {
           Login
         </Button>
 
-        <Button className="w-full gap-2 bg-slate-900 hover:bg-slate-600" onClick={(e) => {
+        <Button type="button" className="w-full gap-2 bg-slate-900 hover:bg-slate-600" onClick={(e) => {
           e.preventDefault();
           window.location.href=`${import.meta.env.VITE_API_URL}/oauth/github`;
         }}>
