@@ -1,10 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
+import { CreateUserDto, UpdateProfileDto, UpdateUsernameDto } from './dto';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
-import { UpdateUsernameDto } from './dto/update-username.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -13,7 +11,7 @@ export class UsersController {
 
   /**
     Create a new user
-  */ 
+  */
   @HttpCode(HttpStatus.CREATED)
   @Post()
   async createUser(@Body() data: CreateUserDto) {
