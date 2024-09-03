@@ -23,5 +23,5 @@ ShadcnUI, Tailwind, React Icons
 
 **Backend**  
 Linux, Nginx, NodeJS, NestJS, WebSockets, SocketIO  
-REST API, PrismaORM, PassportJS, JWT, Brypt, Dotenv, Docker
+REST API, PrismaORM, PassportJS, JWT, Brypt, Dotenv, Docker  
 PostgreSQL, Yandex S3  
